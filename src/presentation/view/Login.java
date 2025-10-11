@@ -1,5 +1,8 @@
 package presentation.view;
 
+import application.casosdeuso.usuario.ValidarLoginUseCase;
+import domain.entidades.Usuario;
+import infrastructure.persistencia.repositorioimpl.UsuarioRepositoryImpl;
 import javax.swing.JOptionPane;
 
 public class Login extends javax.swing.JFrame {
@@ -106,8 +109,9 @@ public class Login extends javax.swing.JFrame {
     private void jButton_IngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_IngresarActionPerformed
         String usuario = txtUsuario.getText();
         String contraseña = new String(txtContraseña.getPassword());
-        
-        if(usuario.equals("admin") && contraseña.equals("1234")){
+        ValidarLoginUseCase useCase = new ValidarLoginUseCase(new UsuarioRepositoryImpl());
+        Usuario u = useCase.ejecutar(usuario, contraseña);
+        if(u!=null){
             Inicio_menu ventanaMenu = new Inicio_menu();
             ventanaMenu.setVisible(true);
             ventanaMenu.setLocationRelativeTo(null); 
