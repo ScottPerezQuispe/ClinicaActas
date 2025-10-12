@@ -34,7 +34,7 @@ public class FrmUsuario extends javax.swing.JPanel {
         jButton2.setText("Eliminar");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel2.setText("Usuarios Registrados");
+        jLabel2.setText("Personal Registrados");
 
         tb_Usuario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
