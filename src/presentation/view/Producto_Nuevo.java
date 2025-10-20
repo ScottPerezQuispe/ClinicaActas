@@ -1,12 +1,64 @@
 package presentation.view;
 
+import application.casosdeuso.equipo.RegistrarEquipoUseCase;
+import domain.entidades.Equipo;
+import infrastructure.persistencia.repositorioimpl.EquipoRepositoryImpl;
+
+import javax.swing.JOptionPane;
+import presentation.view.util.LimitDocumentFilter;
+
+
 
 
 public class Producto_Nuevo extends javax.swing.JDialog {
 
     public Producto_Nuevo(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
+    
+            initComponents();
+            ((javax.swing.text.AbstractDocument) txt_Cantidad.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
+    
+                // Sobreescribe el método para manejar la inserción de texto
+                @Override
+                public void insertString(FilterBypass fb, int offset, String string, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
+                    if (string == null) return;
+                    // Solo permite dígitos (0-9)
+                    if (string.matches("\\d*")) {
+                        super.insertString(fb, offset, string, attr);
+                    }
+                }
+
+                // Sobreescribe el método para manejar el reemplazo/pegado de texto
+                @Override
+                public void replace(FilterBypass fb, int offset, int length, String text, javax.swing.text.AttributeSet attrs) throws javax.swing.text.BadLocationException {
+                    if (text == null) return;
+                    // Solo permite dígitos (0-9)
+                    if (text.matches("\\d*")) {
+                        super.replace(fb, offset, length, text, attrs);
+                    }
+                }
+            });
+            
+            
+            javax.swing.text.AbstractDocument docNombre = 
+            (javax.swing.text.AbstractDocument) txt_Nombre.getDocument();
+        
+            // 2. Aplicar el filtro con el límite deseado (ej. 50 caracteres)
+            docNombre.setDocumentFilter(new LimitDocumentFilter(20));
+            
+            javax.swing.text.AbstractDocument docMarca = 
+            (javax.swing.text.AbstractDocument) txt_Marca.getDocument();
+            docMarca.setDocumentFilter(new LimitDocumentFilter(20));
+            javax.swing.text.AbstractDocument docModelo = 
+            (javax.swing.text.AbstractDocument) txt_Modelo.getDocument();
+            docModelo.setDocumentFilter(new LimitDocumentFilter(20));
+             javax.swing.text.AbstractDocument docSerie = 
+            (javax.swing.text.AbstractDocument) txt_Modelo.getDocument();
+            docSerie.setDocumentFilter(new LimitDocumentFilter(20));
+              javax.swing.text.AbstractDocument docCantidad = 
+            (javax.swing.text.AbstractDocument) txt_Cantidad.getDocument();
+            docCantidad.setDocumentFilter(new LimitDocumentFilter(4));
+           
     }
 
     /**
@@ -22,18 +74,14 @@ public class Producto_Nuevo extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         txt_Cantidad = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txt_Asignados = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        txt_Estado = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         txt_Nombre = new javax.swing.JTextField();
         txt_Marca = new javax.swing.JTextField();
         txt_Modelo = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        btnguardarEquipo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -54,20 +102,16 @@ public class Producto_Nuevo extends javax.swing.JDialog {
 
         jLabel5.setText("Cantidad");
 
-        jLabel6.setText("Asignados");
-
-        jLabel7.setText("Estado");
-
         txt_Marca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_MarcaActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Guardar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnguardarEquipo.setText("Guardar");
+        btnguardarEquipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnguardarEquipoActionPerformed(evt);
             }
         });
 
@@ -76,33 +120,27 @@ public class Producto_Nuevo extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(18, 18, 18)
-                        .addComponent(txt_Asignados))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabel7))
+                                .addComponent(jLabel4))
                             .addComponent(jLabel5))
                         .addGap(25, 25, 25)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txt_Nombre)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txt_Nombre, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
                             .addComponent(txt_Marca)
                             .addComponent(txt_Modelo)
                             .addComponent(txt_Serie)
-                            .addComponent(txt_Cantidad)
-                            .addComponent(txt_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txt_Cantidad)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(31, 31, 31)
+                        .addComponent(btnguardarEquipo)
+                        .addGap(43, 43, 43)
                         .addComponent(jButton1)))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
@@ -129,19 +167,11 @@ public class Producto_Nuevo extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txt_Cantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(txt_Asignados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(txt_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnguardarEquipo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
@@ -156,9 +186,48 @@ public class Producto_Nuevo extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_MarcaActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btnguardarEquipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnguardarEquipoActionPerformed
+         // 1️⃣ Capturar los datos del formulario
+        String nombre = txt_Nombre.getText().trim();
+        String marca = txt_Marca.getText().trim();
+        String modelo = txt_Modelo.getText().trim();
+        String serie = txt_Serie.getText().trim();
+        int cantidad = 0;
+        
+        
+         // Validar cantidad
+        try {
+            cantidad = Integer.parseInt(txt_Cantidad.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "❌ La cantidad debe ser un número válido");
+            return;
+        }
+
+        // Validar campos vacíos
+        if (nombre.isEmpty() || marca.isEmpty() || modelo.isEmpty() || serie.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "⚠️ Todos los campos son obligatorios");
+            return;
+        }
+        
+        
+       
+         // 2️⃣ Crear el objeto Equipo usando tu constructor
+            Equipo equipo = new Equipo(0, nombre, marca, modelo, cantidad);
+
+            // 3️⃣ Usar el caso de uso para registrar el equipo
+            RegistrarEquipoUseCase useCase = new RegistrarEquipoUseCase(new EquipoRepositoryImpl());
+            boolean exito = useCase.ejecutar(equipo);
+
+    // 4️⃣ Mostrar resultado
+    if (exito) {
+        JOptionPane.showMessageDialog(this, "✅ Equipo registrado correctamente");
+        dispose(); // Cierra la ventana
+    } else {
+        JOptionPane.showMessageDialog(this, "❌ Error al registrar el equipo");
+    }
+
+        
+    }//GEN-LAST:event_btnguardarEquipoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,18 +272,14 @@ public class Producto_Nuevo extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnguardarEquipo;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JTextField txt_Asignados;
     private javax.swing.JTextField txt_Cantidad;
-    private javax.swing.JTextField txt_Estado;
     private javax.swing.JTextField txt_Marca;
     private javax.swing.JTextField txt_Modelo;
     private javax.swing.JTextField txt_Nombre;
