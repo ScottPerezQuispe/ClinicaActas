@@ -44,9 +44,9 @@ public class Inicio_menu extends javax.swing.JFrame {
 
         jButton1.setBackground(new java.awt.Color(204, 204, 204));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setText("Usuario");
         jButton1.setBorder(null);
         jButton1.setBorderPainted(false);
+        jButton1.setLabel("Empleado");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -55,7 +55,7 @@ public class Inicio_menu extends javax.swing.JFrame {
 
         jButton2.setBackground(new java.awt.Color(204, 204, 204));
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton2.setText("Producto");
+        jButton2.setText("Equipo");
         jButton2.setBorderPainted(false);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -129,6 +129,7 @@ public class Inicio_menu extends javax.swing.JFrame {
                 .addContainerGap(231, Short.MAX_VALUE))
         );
 
+        jButton1.getAccessibleContext().setAccessibleName("Empleado");
         jButton2.getAccessibleContext().setAccessibleName("Equipo");
         jButton2.getAccessibleContext().setAccessibleDescription("");
 

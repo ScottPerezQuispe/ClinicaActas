@@ -2,8 +2,9 @@ package presentation.view;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import raven.tabbed.TabbedForm;
 
-public class FrmProducto extends javax.swing.JPanel {
+public class FrmProducto extends javax.swing.JPanel{
 
     public FrmProducto() {
         initComponents();
