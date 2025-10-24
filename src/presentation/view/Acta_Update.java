@@ -1,66 +1,29 @@
 package presentation.view;
 
-import application.casosdeuso.equipo.RegistrarEquipoUseCase;
 import domain.entidades.Equipo;
 import infrastructure.persistencia.repositorioimpl.EquipoRepositoryImpl;
-
 import javax.swing.JOptionPane;
-import presentation.view.util.LimitDocumentFilter;
 
+public class Acta_Update extends javax.swing.JDialog {
 
-
-
-public class Producto_Nuevo extends javax.swing.JDialog {
-
-    public Producto_Nuevo(java.awt.Frame parent, boolean modal) {
+    public int idEquipo;
+    
+    
+    public Acta_Update(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        initComponents();
+    }
     
-            initComponents();
-            ((javax.swing.text.AbstractDocument) txt_Cantidad.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
-    
-                // Sobreescribe el método para manejar la inserción de texto
-                @Override
-                public void insertString(FilterBypass fb, int offset, String string, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
-                    if (string == null) return;
-                    // Solo permite dígitos (0-9)
-                    if (string.matches("\\d*")) {
-                        super.insertString(fb, offset, string, attr);
-                    }
-                }
-
-                // Sobreescribe el método para manejar el reemplazo/pegado de texto
-                @Override
-                public void replace(FilterBypass fb, int offset, int length, String text, javax.swing.text.AttributeSet attrs) throws javax.swing.text.BadLocationException {
-                    if (text == null) return;
-                    // Solo permite dígitos (0-9)
-                    if (text.matches("\\d*")) {
-                        super.replace(fb, offset, length, text, attrs);
-                    }
-                }
-            });
-            
-            
-            javax.swing.text.AbstractDocument docNombre = 
-            (javax.swing.text.AbstractDocument) txt_Nombre.getDocument();
-        
-            // 2. Aplicar el filtro con el límite deseado (ej. 50 caracteres)
-            docNombre.setDocumentFilter(new LimitDocumentFilter(20));
-            
-            javax.swing.text.AbstractDocument docMarca = 
-            (javax.swing.text.AbstractDocument) txt_Marca.getDocument();
-            docMarca.setDocumentFilter(new LimitDocumentFilter(20));
-            javax.swing.text.AbstractDocument docModelo = 
-            (javax.swing.text.AbstractDocument) txt_Modelo.getDocument();
-            docModelo.setDocumentFilter(new LimitDocumentFilter(20));
-             javax.swing.text.AbstractDocument docSerie = 
-            (javax.swing.text.AbstractDocument) txt_Modelo.getDocument();
-            docSerie.setDocumentFilter(new LimitDocumentFilter(20));
-              javax.swing.text.AbstractDocument docCantidad = 
-            (javax.swing.text.AbstractDocument) txt_Cantidad.getDocument();
-            docCantidad.setDocumentFilter(new LimitDocumentFilter(4));
-           
+    public void setDatos(String nombre, String marca, String modelo, String cantidad, int id) {
+        txt_Nombre.setText(nombre);
+        txt_Marca.setText(marca);
+        txt_Modelo.setText(modelo);
+        txt_Cantidad.setText(cantidad);
+        idEquipo = id;
     }
 
+
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -70,31 +33,18 @@ public class Producto_Nuevo extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        txt_Cantidad = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         txt_Nombre = new javax.swing.JTextField();
         txt_Marca = new javax.swing.JTextField();
         txt_Modelo = new javax.swing.JTextField();
         btnguardarEquipo = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txt_Cantidad = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        jLabel1.setText("Nombre");
-
-        jLabel2.setText("Marca");
-
-        jLabel3.setText("Modelo");
-
-        jButton1.setText("Cancelar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
 
         jLabel5.setText("Cantidad");
 
@@ -108,6 +58,19 @@ public class Producto_Nuevo extends javax.swing.JDialog {
         btnguardarEquipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnguardarEquipoActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Nombre");
+
+        jLabel2.setText("Marca");
+
+        jLabel3.setText("Modelo");
+
+        jButton1.setText("Cancelar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -132,11 +95,11 @@ public class Producto_Nuevo extends javax.swing.JDialog {
                             .addComponent(txt_Modelo)
                             .addComponent(txt_Cantidad)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
+                        .addGap(30, 30, 30)
                         .addComponent(btnguardarEquipo)
-                        .addGap(36, 36, 36)
+                        .addGap(54, 54, 54)
                         .addComponent(jButton1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,75 +117,45 @@ public class Producto_Nuevo extends javax.swing.JDialog {
                     .addComponent(jLabel3)
                     .addComponent(txt_Modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txt_Cantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addGap(34, 34, 34)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnguardarEquipo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton1))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        setLocationRelativeTo(null); // Centra la ventana
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txt_MarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_MarcaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_MarcaActionPerformed
 
     private void btnguardarEquipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnguardarEquipoActionPerformed
-         // 1️⃣ Capturar los datos del formulario
-        String nombre = txt_Nombre.getText().trim();
-        String marca = txt_Marca.getText().trim();
-        String modelo = txt_Modelo.getText().trim();
-      
-        int cantidad = 0;
-        
-        
-         // Validar cantidad
-        try {
-            cantidad = Integer.parseInt(txt_Cantidad.getText().trim());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "❌ La cantidad debe ser un número válido");
-            return;
+        String nombre = txt_Nombre.getText();
+        String marca = txt_Marca.getText();
+        String modelo = txt_Modelo.getText();
+        int cantidad = Integer.parseInt(txt_Cantidad.getText());
+
+        Equipo equipo = new Equipo(idEquipo, nombre, marca, modelo, cantidad, null);
+        EquipoRepositoryImpl dao = new EquipoRepositoryImpl();
+
+        if (dao.Actualizar(equipo)) {
+            JOptionPane.showMessageDialog(null, "✅ Equipo actualizado correctamente");
+            this.dispose(); // Cierra el diálogo
+        } else {
+            JOptionPane.showMessageDialog(null, "❌ Error al actualizar equipo");
         }
-
-        // Validar campos vacíos
-        if (nombre.isEmpty() || marca.isEmpty() || modelo.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "⚠️ Todos los campos son obligatorios");
-            return;
-        }
-        
-        
-       
-         // 2️⃣ Crear el objeto Equipo usando tu constructor
-            Equipo equipo = new Equipo(0, nombre, marca, modelo, cantidad, null);
-
-            // 3️⃣ Usar el caso de uso para registrar el equipo
-            RegistrarEquipoUseCase useCase = new RegistrarEquipoUseCase(new EquipoRepositoryImpl());
-            boolean exito = useCase.ejecutar(equipo);
-            FrmProducto frm = new FrmProducto();
-            frm.cargarTabla();
-
-    // 4️⃣ Mostrar resultado
-    if (exito) {
-        JOptionPane.showMessageDialog(this, "✅ Equipo registrado correctamente");
-        dispose(); // Cierra la ventana
-    } else {
-        JOptionPane.showMessageDialog(this, "❌ Error al registrar el equipo");
-    }
-
-        
     }//GEN-LAST:event_btnguardarEquipoActionPerformed
 
-    
-    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        setLocationRelativeTo(null); // Centra la ventana
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -240,20 +173,20 @@ public class Producto_Nuevo extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Producto_Nuevo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Acta_Update.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Producto_Nuevo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Acta_Update.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Producto_Nuevo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Acta_Update.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Producto_Nuevo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Acta_Update.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Producto_Nuevo dialog = new Producto_Nuevo(new javax.swing.JFrame(), true);
+                Acta_Update dialog = new Acta_Update(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

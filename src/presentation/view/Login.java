@@ -176,7 +176,7 @@ public Login(Main mainFrame) { // <-- Ahora requiere el Main
         ValidarLoginUseCase useCase = new ValidarLoginUseCase(new UsuarioRepositoryImpl());
         Usuario u = useCase.ejecutar(usuario, contraseña);
         if(u!=null){
-         this.mainFrame.setVisible(true); 
+            this.mainFrame.setVisible(true); 
             this.mainFrame.showMainForm();
             this.dispose();
         } else {

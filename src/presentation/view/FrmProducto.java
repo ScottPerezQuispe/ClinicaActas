@@ -1,14 +1,44 @@
 package presentation.view;
 
+import application.casosdeuso.equipo.ActualizarEquipoUseCase;
+import application.casosdeuso.equipo.EliminarEquipoUseCase;
+import application.casosdeuso.equipo.ListarEquipoUseCase;
+import application.casosdeuso.equipo.RegistrarEquipoUseCase;
+import domain.entidades.Equipo;
+import domain.repositorio.IEquipoRepository;
+import infrastructure.persistencia.repositorioimpl.EquipoRepositoryImpl;
+import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import raven.tabbed.TabbedForm;
+import javax.swing.table.DefaultTableModel;
+
 
 public class FrmProducto extends javax.swing.JPanel{
 
     public FrmProducto() {
         initComponents();
+        cargarTabla(); // carga la tabla automáticamente al abrir
     }
+    
+     ListarEquipoUseCase equipoRepository = new ListarEquipoUseCase(new EquipoRepositoryImpl() );
+ 
+    public void cargarTabla() {
+        DefaultTableModel modelo = (DefaultTableModel) tb_Producto.getModel();
+        modelo.setRowCount(0); // limpia la tabla
+
+        List<Equipo> lista = equipoRepository.Listar(); // método que devuelve todos los equipos
+        for (Equipo eq : lista) {
+            modelo.addRow(new Object[]{
+                eq.getIdEquipo(),
+                eq.getNombreEquipo(),
+                eq.getMarca(),
+                eq.getModelo(),
+                eq.getCantidad()
+            });
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -24,37 +54,55 @@ public class FrmProducto extends javax.swing.JPanel{
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tb_Producto = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnNuevo = new javax.swing.JButton();
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel2.setText("Productos Resgistrados");
+        jLabel2.setText("Mantenimiento de Equipo");
 
         jLabel1.setText("Nombre: ");
 
         tb_Producto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", "", "", null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Nombres", "Marca", "Modelo", "Serie o IMEI", "Cantidad", "Asignados", "Estado"
+                "ID", "Nombre", "Marca", "Modelo", "Cantidad", "Fecha Registrada"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         tb_Producto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane2.setViewportView(tb_Producto);
 
-        jButton1.setText("Editar");
-
-        jButton2.setText("Eliminar");
-
-        jButton3.setText("Nuevo");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        btnNuevo.setText("Nuevo");
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
             }
         });
 
@@ -80,11 +128,11 @@ public class FrmProducto extends javax.swing.JPanel{
                         .addGap(221, 221, 221))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(btnEliminar)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(btnEditar)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3)
+                .addComponent(btnNuevo)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -98,27 +146,85 @@ public class FrmProducto extends javax.swing.JPanel{
                     .addComponent(txt_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
-                .addContainerGap())
+                    .addComponent(btnEditar)
+                    .addComponent(btnEliminar)
+                    .addComponent(btnNuevo))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         Producto_Nuevo form = new Producto_Nuevo(
         (JFrame) SwingUtilities.getWindowAncestor(this), true
         );
         form.setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+         cargarTabla();
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        int fila = tb_Producto.getSelectedRow(); // obtiene la fila seleccionada
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "⚠️ Selecciona un equipo de la tabla.");
+            return;
+        }
+
+        // Supongamos que la primera columna contiene el ID del equipo
+        int idEquipo = Integer.parseInt(tb_Producto.getValueAt(fila, 0).toString());
+
+        int confirm = JOptionPane.showConfirmDialog(
+            null,
+            "¿Seguro que deseas eliminar este equipo?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            EliminarEquipoUseCase dao = new EliminarEquipoUseCase(new EquipoRepositoryImpl());
+            if (dao.Eliminar(idEquipo)) {
+                JOptionPane.showMessageDialog(null, "✅ Equipo eliminado correctamente.");
+                    cargarTabla(); // Método para refrescar los datos
+            } else {
+                JOptionPane.showMessageDialog(null, "❌ Error al eliminar equipo");
+            }
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        int fila = tb_Producto.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "⚠️ Selecciona un equipo para editar");
+            return;
+        }
+
+        // Crear el JDialog (sin ventana padre)
+        Acta_Update ventana = new Acta_Update(null, true);
+
+        // Pasar los datos desde la tabla
+        ventana.setDatos(
+            tb_Producto.getValueAt(fila, 1).toString(), // Nombre
+            tb_Producto.getValueAt(fila, 2).toString(), // Marca
+            tb_Producto.getValueAt(fila, 3).toString(), // Modelo
+            tb_Producto.getValueAt(fila, 4).toString(), // Cantidad
+            Integer.parseInt(tb_Producto.getValueAt(fila, 0).toString()) // ID
+        );
+
+        // Mostrar el formulario
+        ventana.setLocationRelativeTo(this);
+        ventana.setVisible(true);
+
+        // Refrescar la tabla al cerrar el diálogo
+        cargarTabla();
+    }//GEN-LAST:event_btnEditarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnNuevo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane2;
