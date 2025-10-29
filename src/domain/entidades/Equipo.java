@@ -16,19 +16,19 @@ public class Equipo {
     private String Marca; 
     private String Modelo;
     private int Cantidad;
-    private Date FechaRegistro;
+ 
    
     
     // Constructors
     public Equipo() {}
 
-    public Equipo(int IdEquipo, String Nombre, String Marca, String Modelo, int Cantidad, Date FechaRegistro) {
+    public Equipo(int IdEquipo, String Nombre, String Marca, String Modelo, int Cantidad) {
         this.IdEquipo = IdEquipo;
         this.Nombre = Nombre;
         this.Marca = Marca;
         this.Modelo = Modelo;
         this.Cantidad = Cantidad;
-        this.FechaRegistro = FechaRegistro; // Solo para mostrar, no se modifica
+     
     }
 
     
@@ -73,13 +73,8 @@ public class Equipo {
         this.Cantidad = Cantidad;
     }
 
-   public Date getFechaRegitro(){
-       return FechaRegistro;
-   }
+  
 
-   // Solo el repositorio puede usarlo
-   public void setFechaRegitro(Date FechaRegistro){
-       this.FechaRegistro = FechaRegistro;
-   }
+  
     
 }
