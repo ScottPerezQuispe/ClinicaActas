@@ -1,23 +1,24 @@
 package presentation.view;
 
-import application.casosdeuso.equipo.ActualizarEquipoUseCase;
+
 import application.casosdeuso.equipo.EliminarEquipoUseCase;
 import application.casosdeuso.equipo.ListarEquipoUseCase;
-import application.casosdeuso.equipo.RegistrarEquipoUseCase;
 import domain.entidades.Equipo;
-import domain.repositorio.IEquipoRepository;
 import infrastructure.persistencia.repositorioimpl.EquipoRepositoryImpl;
 import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-
+import raven.modal.ModalDialog;
+import raven.modal.Toast;
+import raven.modal.component.SimpleModalBorder;
+import raven.modal.listener.ModalCallback;
 
 public class FrmProducto extends javax.swing.JPanel{
 
     public FrmProducto() {
         initComponents();
+        
+       
         cargarTabla(); // carga la tabla automáticamente al abrir
     }
     
@@ -65,17 +66,17 @@ public class FrmProducto extends javax.swing.JPanel{
 
         tb_Producto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Marca", "Modelo", "Cantidad", "Fecha Registrada"
+                "Código", "Nombre", "Marca", "Modelo", "Cantidad"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -119,21 +120,18 @@ public class FrmProducto extends javax.swing.JPanel{
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txt_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnEliminar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnEditar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnNuevo))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE))
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addGap(221, 221, 221))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnEliminar)
-                .addGap(18, 18, 18)
-                .addComponent(btnEditar)
-                .addGap(18, 18, 18)
-                .addComponent(btnNuevo)
-                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,26 +139,54 @@ public class FrmProducto extends javax.swing.JPanel{
                 .addGap(15, 15, 15)
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txt_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txt_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnNuevo)
+                            .addComponent(btnEditar)
+                            .addComponent(btnEliminar))
+                        .addGap(5, 5, 5)))
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnEditar)
-                    .addComponent(btnEliminar)
-                    .addComponent(btnNuevo))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-        Producto_Nuevo form = new Producto_Nuevo(
-        (JFrame) SwingUtilities.getWindowAncestor(this), true
-        );
-        form.setVisible(true);
-         cargarTabla();
+ 
+  // 1️⃣ Obtener el JFrame principal
+     FrmMantenimientoProducto panel = new FrmMantenimientoProducto(this);
+    SimpleModalBorder.Option[] options = new SimpleModalBorder.Option[]{
+        new SimpleModalBorder.Option("Cancelar", SimpleModalBorder.CANCEL_OPTION), 
+        new SimpleModalBorder.Option("Guardar", SimpleModalBorder.OK_OPTION)          
+    };
+    SimpleModalBorder modal = new SimpleModalBorder(
+    panel,
+    "Registrar Nuevo Equipo",  
+    options,
+    (ModalCallback)(mc, event) -> {
+       
+        if (event == SimpleModalBorder.OK_OPTION) {
+             panel.guardarEquipo(); 
+            if (panel.wasSuccessful()) {
+              //  controller.close();     
+                 cargarTabla(); 
+                Toast.show(this, Toast.Type.SUCCESS, "✅ Guardado correctamente");
+            }
+ 
+        } else if (event == SimpleModalBorder.CANCEL_OPTION) {
+            //controller.close();
+        }
+        
+    }
+);
+
+ModalDialog.showModal(this, modal);
+    
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
@@ -193,7 +219,7 @@ public class FrmProducto extends javax.swing.JPanel{
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        int fila = tb_Producto.getSelectedRow();
+       /* int fila = tb_Producto.getSelectedRow();
 
         if (fila == -1) {
             JOptionPane.showMessageDialog(null, "⚠️ Selecciona un equipo para editar");
@@ -217,7 +243,68 @@ public class FrmProducto extends javax.swing.JPanel{
         ventana.setVisible(true);
 
         // Refrescar la tabla al cerrar el diálogo
-        cargarTabla();
+        cargarTabla();*/
+       
+       int fila = tb_Producto.getSelectedRow();
+
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(null, "⚠️ Selecciona un equipo para editar");
+        return;
+    }
+
+    // 1. Obtener los datos de la fila seleccionada
+    int idEquipo = Integer.parseInt(tb_Producto.getValueAt(fila, 0).toString());
+    String nombre = tb_Producto.getValueAt(fila, 1).toString();
+    String marca = tb_Producto.getValueAt(fila, 2).toString();
+    String modelo = tb_Producto.getValueAt(fila, 3).toString();
+    int cantidad = Integer.parseInt(tb_Producto.getValueAt(fila, 4).toString());
+
+    // 2. Crear una instancia de Equipo con los datos
+    Equipo equipoAEditar = new Equipo();
+    equipoAEditar.setIdEquipo(idEquipo);
+    equipoAEditar.setNombreEquipo(nombre);
+    equipoAEditar.setMarca(marca);
+    equipoAEditar.setModelo(modelo);
+    equipoAEditar.setCantidad(cantidad);
+    
+    // 3. Crear el panel de mantenimiento y pasarle los datos (necesitarás un nuevo constructor/método)
+    // Usamos el panel de registro, pero con una bandera de edición
+    FrmMantenimientoProducto panel = new FrmMantenimientoProducto(this, equipoAEditar);
+    
+    // 4. Definir las opciones del modal (Cancelar y Guardar)
+    SimpleModalBorder.Option[] options = new SimpleModalBorder.Option[]{
+        new SimpleModalBorder.Option("Cancelar", SimpleModalBorder.CANCEL_OPTION), 
+        new SimpleModalBorder.Option("Actualizar", SimpleModalBorder.OK_OPTION)      
+    };
+
+    // 5. Crear el modal
+    SimpleModalBorder modal = new SimpleModalBorder(
+        panel,
+        "Editar Equipo: " + nombre, // Título dinámico
+        options,
+        // Eliminamos el DEFAULT_OPTION que estaba causando el error de constructor
+        (ModalCallback)(mc, event) -> {
+            
+            if (event == SimpleModalBorder.OK_OPTION) {
+                
+               panel.ActualizarEquipo();
+             
+            if (panel.wasSuccessful()) {
+              //  controller.close();     
+                 cargarTabla(); 
+                 Toast.show(this, Toast.Type.SUCCESS, "✅ Equipo actualizado correctamente");
+            }
+ 
+            } else if (event == SimpleModalBorder.CANCEL_OPTION) {
+                //controller.close();
+            }
+            
+            
+            
+        }
+    );
+
+    ModalDialog.showModal(this, modal);
     }//GEN-LAST:event_btnEditarActionPerformed
 
 

@@ -5,7 +5,9 @@
 package presentation.drawer;
 
 
+import presentation.view.FrmActa_registro;
 import presentation.view.FrmProducto;
+import presentation.view.FrmUsuario;
 import presentation.view.Main;
 import raven.drawer.component.SimpleDrawerBuilder;
 import raven.drawer.component.footer.SimpleFooterData;
@@ -80,15 +82,20 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .addMenuEvent(new MenuEvent() {
                     @Override
                     public void selected(MenuAction action, int index, int subIndex) {
-                        if (index == 1) {
-                       
+                        if (index == 0){
                             
-                            // Crear el panel que quieres mostrar
-                        FrmProducto panel = new FrmProducto(); 
-                        
-                       // 💥 CORRECCIÓN CLAVE: Usar el método que solo reemplaza el área central
-                         mainFrame.showPanel(panel);
-                        } else if (index == 9) {
+                            FrmUsuario panel = new FrmUsuario(); 
+                            mainFrame.showPanel(panel);
+                        }
+                        else if (index == 1) {
+                            FrmProducto panel = new FrmProducto(); 
+                            mainFrame.showPanel(panel);
+                        } 
+                        else if (index == 2) {
+                            FrmActa_registro panel = new FrmActa_registro(); 
+                            mainFrame.showPanel(panel);
+                        } 
+                        else if (index == 9) {
                             Main.main.login();
                         }
                         System.out.println("Menu selected " + index + " " + subIndex);

@@ -97,7 +97,7 @@ public class EquipoRepositoryImpl implements IEquipoRepository {
                 eq.setMarca(rs.getString("Marca"));
                 eq.setModelo(rs.getString("Modelo"));
                 eq.setCantidad(rs.getInt("Cantidad"));
-                eq.setFechaRegitro(rs.getDate("FechaRegistro"));
+               
                 lista.add(eq);
             }
 
