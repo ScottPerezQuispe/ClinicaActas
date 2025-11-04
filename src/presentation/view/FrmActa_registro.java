@@ -76,7 +76,7 @@ public class FrmActa_registro extends javax.swing.JPanel {
         jLabel2.setText("Tipo de Acta :");
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setText("Acta-Entrega");
+        jLabel1.setText("Acta");
 
         jRadioButton1.setText("Entrega");
 
