@@ -40,8 +40,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     public SimpleHeaderData getSimpleHeaderData() {
         return new SimpleHeaderData()
               .setIcon(new AvatarIcon(getClass().getResource("/presentation/image/profile.png"), 60, 60, 999))
-                .setTitle("Ra Ven")
-                .setDescription("raven@gmail.com");
+                .setTitle("Miguel")
+                .setDescription("Soporte");
     }
 
     @Override
