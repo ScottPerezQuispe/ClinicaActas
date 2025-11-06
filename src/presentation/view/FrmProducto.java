@@ -22,9 +22,10 @@ public class FrmProducto extends javax.swing.JPanel{
         cargarTabla(); // carga la tabla automáticamente al abrir
     }
     
-     ListarEquipoUseCase equipoRepository = new ListarEquipoUseCase(new EquipoRepositoryImpl() );
+    
  
     public void cargarTabla() {
+         ListarEquipoUseCase equipoRepository = new ListarEquipoUseCase(new EquipoRepositoryImpl() );
         DefaultTableModel modelo = (DefaultTableModel) tb_Producto.getModel();
         modelo.setRowCount(0); // limpia la tabla
 

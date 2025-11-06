@@ -2,6 +2,15 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/Universidad/Semestre%206/Integracion/com.clinica.actas/ClinicaActas/src/presentation/view/FrmActa_registro.java</file>
+            <file>file:/D:/Universidad/Semestre%206/Integracion/com.clinica.actas/ClinicaActas/src/domain/entidades/Equipo.java</file>
+            <file>file:/D:/Universidad/Semestre%206/Integracion/com.clinica.actas/ClinicaActas/src/infrastructure/persistencia/repositorioimpl/EquipoRepositoryImpl.java</file>
+            <file>file:/D:/Universidad/Semestre%206/Integracion/com.clinica.actas/ClinicaActas/src/presentation/view/EquipoCellEditor.java</file>
+            <file>file:/D:/Universidad/Semestre%206/Integracion/com.clinica.actas/ClinicaActas/src/presentation/view/FrmProducto.java</file>
+            <file>file:/D:/Universidad/Semestre%206/Integracion/com.clinica.actas/ClinicaActas/src/presentation/view/FrmActa_bandeja.java</file>
+            <file>file:/D:/Universidad/Semestre%206/Integracion/com.clinica.actas/ClinicaActas/src/presentation/drawer/MyDrawerBuilder.java</file>
+            <file>file:/D:/Universidad/Semestre%206/Integracion/com.clinica.actas/ClinicaActas/src/presentation/view/Main.java</file>
+        </group>
     </open-files>
 </project-private>
