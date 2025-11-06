@@ -22,6 +22,7 @@ public class Equipo {
     // Constructors
     public Equipo() {}
 
+
     public Equipo(int IdEquipo, String Nombre, String Marca, String Modelo, int Cantidad) {
         this.IdEquipo = IdEquipo;
         this.Nombre = Nombre;
@@ -73,7 +74,11 @@ public class Equipo {
         this.Cantidad = Cantidad;
     }
 
-  
+  @Override
+    public String toString() {
+        // Devuelve el nombre del equipo, que es lo que el usuario debe ver.
+        return this.Nombre; 
+    }
 
   
     
