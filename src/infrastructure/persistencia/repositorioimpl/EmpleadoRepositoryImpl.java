@@ -43,7 +43,7 @@ public class EmpleadoRepositoryImpl implements IEmpleadoRepository{
             cs.setString(2, empleado.getDni());
             cs.setString(3, empleado.getNombres());
             cs.setString(4, empleado.getApellidos());
-             cs.setInt(4, empleado.getArea().getIdArea());
+            cs.setInt(5, empleado.getArea().getIdArea());
 
             exito = cs.executeUpdate() > 0;
 

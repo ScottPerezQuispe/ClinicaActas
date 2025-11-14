@@ -1,12 +1,40 @@
 package presentation.view;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import application.casosdeuso.empleado.ListarEmpleadoUseCase;
+import application.casosdeuso.empleado.EliminarEmpleadoUseCase;
+import domain.entidades.Area;
+import domain.entidades.Empleado;
+import infrastructure.persistencia.repositorioimpl.EmpleadoRepositoryImpl;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import raven.modal.ModalDialog;
+import raven.modal.Toast;
+import raven.modal.component.SimpleModalBorder;
+import raven.modal.listener.ModalCallback;
 
 public class FrmUsuario extends javax.swing.JPanel {
 
     public FrmUsuario() {
         initComponents();
+        cargarTabla();
+    }
+    
+    public void cargarTabla() {
+        ListarEmpleadoUseCase empleadoRepository = new ListarEmpleadoUseCase(new EmpleadoRepositoryImpl());
+        DefaultTableModel modelo = (DefaultTableModel) tb_Usuario.getModel();
+        modelo.setRowCount(0); // limpia la tabla
+
+        List<Empleado> lista = empleadoRepository.Listar(); // método que devuelve todos los Empleados
+        for (Empleado eq : lista) {
+            modelo.addRow(new Object[]{
+                eq.getIdEmpleado(),
+                eq.getNombres(),
+                eq.getApellidos(),
+                eq.getDni(),
+                eq.getArea().getNombre()
+            });
+        }
     }
 
     /**
@@ -20,40 +48,58 @@ public class FrmUsuario extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         txt_Buscar = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        Btn_Editar = new javax.swing.JButton();
+        Brn_Eliminar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tb_Usuario = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
+        Btn_Nuevo = new javax.swing.JButton();
 
         jLabel1.setText("Nombre: ");
 
-        jButton1.setText("Editar");
+        Btn_Editar.setText("Editar");
+        Btn_Editar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Btn_EditarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Eliminar");
+        Brn_Eliminar.setText("Eliminar");
+        Brn_Eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Brn_EliminarActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Mantenimiento de Empleados");
 
         tb_Usuario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", "", "", null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Nombres", "Apellidos", "DNI", "Area"
+                "ID", "Nombres", "Apellidos", "DNI", "Area"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         tb_Usuario.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane2.setViewportView(tb_Usuario);
 
-        jButton3.setText("Nuevo");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        Btn_Nuevo.setText("Nuevo");
+        Btn_Nuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                Btn_NuevoActionPerformed(evt);
             }
         });
 
@@ -69,11 +115,11 @@ public class FrmUsuario extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)
+                        .addComponent(Brn_Eliminar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
+                        .addComponent(Btn_Editar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3))
+                        .addComponent(Btn_Nuevo))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -95,27 +141,137 @@ public class FrmUsuario extends javax.swing.JPanel {
                         .addGap(18, 18, 18))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton3)
-                            .addComponent(jButton1)
-                            .addComponent(jButton2))
+                            .addComponent(Btn_Nuevo)
+                            .addComponent(Btn_Editar)
+                            .addComponent(Brn_Eliminar))
                         .addGap(7, 7, 7)))
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(35, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        Usuario_Nuevo form = new Usuario_Nuevo(
-        (JFrame) SwingUtilities.getWindowAncestor(this), true
+    private void Btn_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_NuevoActionPerformed
+        
+        FrmMantenimientoEmpleado panel = new FrmMantenimientoEmpleado(this);
+        SimpleModalBorder.Option[] options = new SimpleModalBorder.Option[]{
+            new SimpleModalBorder.Option("Cancelar", SimpleModalBorder.CANCEL_OPTION),
+            new SimpleModalBorder.Option("Guardar", SimpleModalBorder.OK_OPTION)
+        };
+
+        SimpleModalBorder modal = new SimpleModalBorder(panel, "Registrar Nuevo Empleado", options, (ModalCallback) (mc, event) -> {
+            if (event == SimpleModalBorder.OK_OPTION) {
+                panel.guardarEmpleado();
+                if (panel.wasSuccessful()) {
+                    cargarTabla();
+                    Toast.show(this, Toast.Type.SUCCESS, "✅ Guardado correctamente");
+                }
+            }
+        });
+
+        ModalDialog.showModal(this, modal);
+        
+    }//GEN-LAST:event_Btn_NuevoActionPerformed
+
+    private void Btn_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_EditarActionPerformed
+        int fila = tb_Usuario.getSelectedRow();
+
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(null, "⚠️ Selecciona un Empleado para editar");
+        return;
+    }
+
+    // 1. Obtener los datos de la fila seleccionada
+    int idEmpleado = Integer.parseInt(tb_Usuario.getValueAt(fila, 0).toString());
+    String nombre = tb_Usuario.getValueAt(fila, 1).toString();
+    String apellido = tb_Usuario.getValueAt(fila, 2).toString();
+    String dni = tb_Usuario.getValueAt(fila, 3).toString();
+    String nombreArea = tb_Usuario.getValueAt(fila, 4).toString();
+
+    // Crear el objeto Area
+    Area area = new Area();
+    area.setNombre(nombreArea);
+    
+    // 2. Crear una instancia de Empleado con los datos
+    Empleado empleadoAEditar = new Empleado();
+    empleadoAEditar.setIdEmpleado(idEmpleado);
+    empleadoAEditar.setNombres(nombre);
+    empleadoAEditar.setApellidos(apellido);
+    empleadoAEditar.setDni(dni);
+    empleadoAEditar.setArea(area);
+
+    
+    // 3. Crear el panel de mantenimiento y pasarle los datos (necesitarás un nuevo constructor/método)
+    // Usamos el panel de registro, pero con una bandera de edición
+    FrmMantenimientoEmpleado panel = new FrmMantenimientoEmpleado(this, empleadoAEditar);
+    
+    // 4. Definir las opciones del modal (Cancelar y Guardar)
+    SimpleModalBorder.Option[] options = new SimpleModalBorder.Option[]{
+        new SimpleModalBorder.Option("Cancelar", SimpleModalBorder.CANCEL_OPTION), 
+        new SimpleModalBorder.Option("Actualizar", SimpleModalBorder.OK_OPTION)      
+    };
+
+    // 5. Crear el modal
+    SimpleModalBorder modal = new SimpleModalBorder(
+        panel,
+        "Editar Empleado: " + nombre, // Título dinámico
+        options,
+        // Eliminamos el DEFAULT_OPTION que estaba causando el error de constructor
+        (ModalCallback)(mc, event) -> {
+            
+            if (event == SimpleModalBorder.OK_OPTION) {
+                
+               panel.ActualizarEmpleado();
+             
+            if (panel.wasSuccessful()) {
+              //  controller.close();     
+                 cargarTabla(); 
+                 Toast.show(this, Toast.Type.SUCCESS, "✅ Empleado actualizado correctamente");
+            }
+ 
+            } else if (event == SimpleModalBorder.CANCEL_OPTION) {
+                //controller.close();
+            }
+            
+            
+            
+        }
+    );
+
+    ModalDialog.showModal(this, modal);
+    }//GEN-LAST:event_Btn_EditarActionPerformed
+
+    private void Brn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Brn_EliminarActionPerformed
+        int fila = tb_Usuario.getSelectedRow(); // obtiene la fila seleccionada
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "⚠️ Selecciona un Empleado de la tabla.");
+            return;
+        }
+
+        // Supongamos que la primera columna contiene el ID del Empleado
+        int idEmpleado = Integer.parseInt(tb_Usuario.getValueAt(fila, 0).toString());
+
+        int confirm = JOptionPane.showConfirmDialog(
+            null,
+            "¿Seguro que deseas eliminar este Empleado?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION
         );
-        form.setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            EliminarEmpleadoUseCase dao = new EliminarEmpleadoUseCase(new EmpleadoRepositoryImpl());
+            dao.Eliminar(idEmpleado);
+                JOptionPane.showMessageDialog(null, "✅ Empleado eliminado correctamente.");
+                    cargarTabla(); // Método para refrescar los datos
+            
+        }
+    }//GEN-LAST:event_Brn_EliminarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton Brn_Eliminar;
+    private javax.swing.JButton Btn_Editar;
+    private javax.swing.JButton Btn_Nuevo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane2;

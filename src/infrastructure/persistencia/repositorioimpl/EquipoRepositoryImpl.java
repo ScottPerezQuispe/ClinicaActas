@@ -106,5 +106,31 @@ public class EquipoRepositoryImpl implements IEquipoRepository {
         }
         return lista;
     }
+
+    @Override
+    public List<Equipo> ListarCombo() {
+        List<Equipo> lista = new ArrayList<>();
+        String sql = "{CALL sp_ListarEquipos()}";
+
+        try (Connection con = MySQLConnection.obtenerConexion();
+             CallableStatement cs = con.prepareCall(sql);
+             ResultSet rs = cs.executeQuery()) {
+
+            while (rs.next()) {
+                Equipo eq = new Equipo();
+                eq.setIdEquipo(rs.getInt("IdEquipo"));
+                eq.setNombreEquipo(rs.getString("Nombre"));
+                eq.setMarca(rs.getString("Marca"));
+                eq.setModelo(rs.getString("Modelo"));
+                eq.setCantidad(rs.getInt("Cantidad"));
+               
+                lista.add(eq);
+            }
+
+        } catch (Exception e) {
+            System.err.println("❌ Error al listar equipos: " + e.getMessage());
+        }
+        return lista;
+    }
     
 }

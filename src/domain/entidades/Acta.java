@@ -5,88 +5,121 @@
 package domain.entidades;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author Scott.perez
  */
 public class Acta {
-    private int idActa;
-    private String numActa;
-    private Date fechaActa;
-    private int idUsuario; // Foreign Key to Usuario (User who created/authorized)
-    private String solicitante;
-    private String observaciones;
-    private String archivoPDF;
+   private int IdActa;
+    private Date Fecha; 
+    private int IdTipo; // Referencia al tipo de acta (Entrega/Recojo)
+    
+    // Mapeo de FKs a objetos de Dominio para mejor manejo
+    private int IdEmpleado; // Asumiendo que existe la clase Empleado
+    private int IdUsuarioSoporte; // Asumiendo que existe la clase Usuario
+    private int IdCoordinador; // Asumiendo que existe la clase Usuario
+    
+    private Date FechaSoporte;
+    private Date FechaCoordinador;
+    private String Observacion;
+    private int IdEstado;
+    // 👉 Aquí está la lista de detalles del acta
+    private List<DetalleActa> Detalles;
+    
+  
     
      public Acta() {}
 
-    public Acta(int idActa, String numActa, Date fechaActa, int idUsuario, String solicitante, String observaciones, String archivoPDF) {
-        this.idActa = idActa;
-        this.numActa = numActa;
-        this.fechaActa = fechaActa;
-        this.idUsuario = idUsuario;
-        this.solicitante = solicitante;
-        this.observaciones = observaciones;
-        this.archivoPDF = archivoPDF;
-    }
-
     public int getIdActa() {
-        return idActa;
+        return IdActa;
     }
 
-    public void setIdActa(int idActa) {
-        this.idActa = idActa;
+    public void setIdActa(int IdActa) {
+        this.IdActa = IdActa;
     }
 
-    public String getNumActa() {
-        return numActa;
+    public Date getFecha() {
+        return Fecha;
     }
 
-    public void setNumActa(String numActa) {
-        this.numActa = numActa;
+    public void setFecha(Date Fecha) {
+        this.Fecha = Fecha;
     }
 
-    public Date getFechaActa() {
-        return fechaActa;
+    public int getIdTipo() {
+        return IdTipo;
     }
 
-    public void setFechaActa(Date fechaActa) {
-        this.fechaActa = fechaActa;
+    public void setIdTipo(int IdTipo) {
+        this.IdTipo = IdTipo;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
+    public int getIdEmpleado() {
+        return IdEmpleado;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setIdEmpleado(int IdEmpleado) {
+        this.IdEmpleado = IdEmpleado;
     }
 
-    public String getSolicitante() {
-        return solicitante;
+    public int getIdUsuarioSoporte() {
+        return IdUsuarioSoporte;
     }
 
-    public void setSolicitante(String solicitante) {
-        this.solicitante = solicitante;
+    public void setIdUsuarioSoporte(int IdUsuarioSoporte) {
+        this.IdUsuarioSoporte = IdUsuarioSoporte;
     }
 
-    public String getObservaciones() {
-        return observaciones;
+    public int getIdCoordinador() {
+        return IdCoordinador;
     }
 
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
+    public void setIdCoordinador(int IdCoordinador) {
+        this.IdCoordinador = IdCoordinador;
     }
 
-    public String getArchivoPDF() {
-        return archivoPDF;
+    public Date getFechaSoporte() {
+        return FechaSoporte;
     }
 
-    public void setArchivoPDF(String archivoPDF) {
-        this.archivoPDF = archivoPDF;
+    public void setFechaSoporte(Date FechaSoporte) {
+        this.FechaSoporte = FechaSoporte;
     }
-    
-    
+
+    public Date getFechaCoordinador() {
+        return FechaCoordinador;
+    }
+
+    public void setFechaCoordinador(Date FechaCoordinador) {
+        this.FechaCoordinador = FechaCoordinador;
+    }
+
+    public String getObservacion() {
+        return Observacion;
+    }
+
+    public void setObservacion(String Observacion) {
+        this.Observacion = Observacion;
+    }
+
+    public int getIdEstado() {
+        return IdEstado;
+    }
+
+    public void setIdEstado(int IdEstado) {
+        this.IdEstado = IdEstado;
+    }
+
+    public List<DetalleActa> getDetalles() {
+        return Detalles;
+    }
+
+    public void setDetalles(List<DetalleActa> Detalles) {
+        this.Detalles = Detalles;
+    }
+
+   
     
 }

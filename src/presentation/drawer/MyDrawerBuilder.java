@@ -5,7 +5,9 @@
 package presentation.drawer;
 
 
+import domain.entidades.Usuario;
 import presentation.view.FrmActa_registro;
+import presentation.view.FrmBandejaActa;
 import presentation.view.FrmProducto;
 import presentation.view.FrmUsuario;
 import presentation.view.Main;
@@ -30,22 +32,34 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     
     // 1. Declarar la variable para guardar la referencia de Main
     private final Main mainFrame; 
+    private final Usuario usuarioLogueado;
+   // 🎯 NUEVO CAMPO: Almacena el resultado final del encabezado
 
+   
     // 2. Crear un constructor que reciba la referencia
-    public MyDrawerBuilder(Main mainFrame) {
+    public MyDrawerBuilder(Main mainFrame, Usuario usuario) {
         this.mainFrame = mainFrame;
+        this.usuarioLogueado = usuario;
+   
     }
     
+ 
 @Override
     public SimpleHeaderData getSimpleHeaderData() {
+        // 🎯 LÓGICA CLAVE: Chequear this.usuarioLogueado, que será null en la primera llamada.
+        // Esto garantiza que siempre devolvemos un objeto SimpleHeaderData NO NULO.
+        
+        String nombre = (this.usuarioLogueado != null) ? this.usuarioLogueado.getNombreCompleto(): "Cargando...";
+        String rol = (this.usuarioLogueado != null) ? this.usuarioLogueado.getNombreRol(): "Por favor, espere.";
+        
         return new SimpleHeaderData()
-              .setIcon(new AvatarIcon(getClass().getResource("/presentation/image/profile.png"), 60, 60, 999))
-                .setTitle("Miguel")
-                .setDescription("Soporte");
+            .setIcon(new AvatarIcon(getClass().getResource("/presentation/image/profile.png"), 60, 60, 999))
+            .setTitle(nombre) 
+            .setDescription(rol);
     }
-
     @Override
     public SimpleMenuOption getSimpleMenuOption() {
+        
         String menus[][] = {
            // {"~MAIN~"},
             //{"Dashboard"},
@@ -54,7 +68,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             {"Equipo"},
             //{"Calendar"},
             {"~Acta~"},
-            //{"Bandeja"},
+            {"Bandeja"},
           {"Registrar"},
             //{"~OTHER~"},
            // {"Charts", "Apex", "Flot", "Sparkline"},
@@ -66,7 +80,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
            // "dashboard.svg",
             "user.svg",
             "pc.svg",
-            //"calendar.svg",
+            "calendar.svg",
             "process.svg",
            // "forms.svg",
            // "chart.svg",
@@ -82,6 +96,9 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .addMenuEvent(new MenuEvent() {
                     @Override
                     public void selected(MenuAction action, int index, int subIndex) {
+                         // 🎯 FORMA DE ACCEDER DENTRO DE MenuEvent:
+                            Usuario usuarioParaFormulario = MyDrawerBuilder.this.usuarioLogueado;
+                            
                         if (index == 0){
                             
                             FrmUsuario panel = new FrmUsuario(); 
@@ -92,13 +109,19 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             mainFrame.showPanel(panel);
                         } 
                         else if (index == 2) {
-                            FrmActa_registro panel = new FrmActa_registro(); 
+                           FrmBandejaActa panel = new FrmBandejaActa(); 
+                          
+                            mainFrame.showPanel(panel);
+                        } 
+                         else if (index == 3) {
+                           
+                              FrmActa_registro panel = new FrmActa_registro(); 
                             mainFrame.showPanel(panel);
                         } 
                         else if (index == 9) {
                             Main.main.login();
                         }
-                        System.out.println("Menu selected " + index + " " + subIndex);
+                        System.out.println("Menu selected " + index + " " + subIndex+ " "+ usuarioParaFormulario.getNombreCompleto());
                     }
                 })
                 .setMenuValidation(new MenuValidation() {

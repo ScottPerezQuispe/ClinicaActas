@@ -11,77 +11,85 @@ import java.util.Date;
  * @author Scott.perez
  */
 public class Usuario {
-    private int idUsuario;
-    private int idPersonal;
-    private int idRol;
-    private String usuario;
-    private String clave;
-    private int idEstado;
-
+    private int IdUsuario;
+    private int IdRol;
+    private String NombreRol;
+    private String NombreCompleto;
+    private String Usuario;
+    private String Clave;
+    private int IdEstado;
+    
+   
     // 🔹 Constructores
     public Usuario() {
     }
 
-    public Usuario(int idUsuario, int idPersonal, int idRol, String usuario, String clave, int idEstado) {
-        this.idUsuario = idUsuario;
-        this.idPersonal = idPersonal;
-        this.idRol = idRol;
-        this.usuario = usuario;
-        this.clave = clave;
-        this.idEstado = idEstado;
+    public Usuario(int IdUsuario, int IdRol, String NombreRol, String NombreCompleto, String Usuario, String Clave, int IdEstado) {
+        this.IdUsuario = IdUsuario;
+        this.IdRol = IdRol;
+        this.NombreRol = NombreRol;
+        this.NombreCompleto = NombreCompleto;
+        this.Usuario = Usuario;
+        this.Clave = Clave;
+        this.IdEstado = IdEstado;
     }
 
-    // 🔹 Getters y Setters
+    
     public int getIdUsuario() {
-        return idUsuario;
+        return IdUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public int getIdPersonal() {
-        return idPersonal;
-    }
-
-    public void setIdPersonal(int idPersonal) {
-        this.idPersonal = idPersonal;
+    public void setIdUsuario(int IdUsuario) {
+        this.IdUsuario = IdUsuario;
     }
 
     public int getIdRol() {
-        return idRol;
+        return IdRol;
     }
 
-    public void setIdRol(int idRol) {
-        this.idRol = idRol;
+    public void setIdRol(int IdRol) {
+        this.IdRol = IdRol;
+    }
+
+    public String getNombreRol() {
+        return NombreRol;
+    }
+
+    public void setNombreRol(String NombreRol) {
+        this.NombreRol = NombreRol;
+    }
+
+    public String getNombreCompleto() {
+        return NombreCompleto;
+    }
+
+    public void setNombreCompleto(String NombreCompleto) {
+        this.NombreCompleto = NombreCompleto;
     }
 
     public String getUsuario() {
-        return usuario;
+        return Usuario;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void setUsuario(String Usuario) {
+        this.Usuario = Usuario;
     }
 
     public String getClave() {
-        return clave;
+        return Clave;
     }
 
-    public void setClave(String clave) {
-        this.clave = clave;
+    public void setClave(String Clave) {
+        this.Clave = Clave;
     }
 
     public int getIdEstado() {
-        return idEstado;
+        return IdEstado;
     }
 
-    public void setIdEstado(int idEstado) {
-        this.idEstado = idEstado;
+    public void setIdEstado(int IdEstado) {
+        this.IdEstado = IdEstado;
     }
 
-    // 🔹 Métodos adicionales (opcional)
-    public boolean estaActivo() {
-        return idEstado == 1;
-    }
+    
 }
