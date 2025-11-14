@@ -22,4 +22,7 @@ public class ListarEquipoUseCase {
     public List<Equipo> Listar() {
         return Repository.Listar();
     }
+    public List<Equipo> ListarCombo(){
+     return Repository.ListarCombo();
+    }
 }

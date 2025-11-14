@@ -5,7 +5,7 @@ public class Empleado {
     private String dni;
     private String nombres;
     private String apellidos;
-   private Area area; // Relación con la entidad Area
+    private Area area; // Relación con la entidad Area
 
     // Constructor vacío
     public Empleado() {}
