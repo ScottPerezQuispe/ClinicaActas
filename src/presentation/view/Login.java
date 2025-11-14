@@ -35,7 +35,7 @@ public Login(Main mainFrame) { // <-- Ahora requiere el Main
         txtUsuario = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtContraseña = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
+        btnIngrear = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("LOGIN");
@@ -106,13 +106,13 @@ public Login(Main mainFrame) { // <-- Ahora requiere el Main
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Contraseña");
 
-        jButton1.setBackground(new java.awt.Color(0, 102, 102));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Ingresar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnIngrear.setBackground(new java.awt.Color(0, 102, 102));
+        btnIngrear.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnIngrear.setForeground(new java.awt.Color(255, 255, 255));
+        btnIngrear.setText("Ingresar");
+        btnIngrear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnIngrearActionPerformed(evt);
             }
         });
 
@@ -132,7 +132,7 @@ public Login(Main mainFrame) { // <-- Ahora requiere el Main
                             .addComponent(txtUsuario)
                             .addComponent(jLabel3)
                             .addComponent(txtContraseña, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(btnIngrear, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
         LeftLayout.setVerticalGroup(
@@ -149,7 +149,7 @@ public Login(Main mainFrame) { // <-- Ahora requiere el Main
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnIngrear, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(137, Short.MAX_VALUE))
         );
 
@@ -170,21 +170,21 @@ public Login(Main mainFrame) { // <-- Ahora requiere el Main
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnIngrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngrearActionPerformed
          String usuario = txtUsuario.getText();
         String contraseña = new String(txtContraseña.getPassword());
         ValidarLoginUseCase useCase = new ValidarLoginUseCase(new UsuarioRepositoryImpl());
         Usuario u = useCase.ejecutar(usuario, contraseña);
         if(u!=null){
             this.mainFrame.setVisible(true); 
-            this.mainFrame.showMainForm();
+            this.mainFrame.showMainForm(u);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");
         }
        
      
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnIngrearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -194,7 +194,7 @@ public Login(Main mainFrame) { // <-- Ahora requiere el Main
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Left;
     private javax.swing.JPanel Right;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnIngrear;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

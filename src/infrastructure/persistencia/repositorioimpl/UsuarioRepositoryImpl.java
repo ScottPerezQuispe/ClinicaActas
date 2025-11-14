@@ -27,8 +27,9 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
                 if (rs.next()) {
                     user = new Usuario(
                         rs.getInt("IdUsuario"),
-                        rs.getInt("IdPersonal"),
                         rs.getInt("IdRol"),
+                        rs.getString("NombreRol"),
+                        rs.getString("NombreCompleto"),
                         rs.getString("Usuario"),
                         rs.getString("Clave"),
                             rs.getInt("IdEstado")

@@ -3,7 +3,14 @@ package presentation.view;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import domain.entidades.Usuario;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import presentation.drawer.MyDrawerBuilder;
 import raven.drawer.Drawer;
@@ -22,26 +29,61 @@ import raven.toast.Notifications;
  * @author RAVEN
  */
 public class Main extends javax.swing.JFrame {
-
-   public static Main main;
-  //  private LoginPanel loginForm;
-
-    /**
-     * Creates new form Main
-     */
+    private Usuario usuarioLogueado;
+    public static Main main;
+    // 🎯 Nuevos campos para el nombre y el rol
+    private JLabel lblNombreUsuario;
+    private JLabel lblRolUsuario;
+  
     public Main() {
         initComponents();
+         GlassPanePopup.install(this);
+        Notifications.getInstance().setJFrame(this);
         
+      // Creamos un nuevo panel que será el único contenido del JFrame
+    JPanel mainContainer = new JPanel(new BorderLayout()); 
+    
+    // --- Lógica del Header ---
+    
+    JPanel headerPanel = new JPanel();
+   // 2a. Configuración visual esencial para que se vea y se alinee a la DERECHA
+       // Recomendado: Gris muy suave (Lighter Gray, #EFEFEF)
+headerPanel.setBackground(new Color(239, 239, 239));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         
-      
+        // 🛑 CLAVE PARA LA ESQUINA DERECHA: Usar FlowLayout.RIGHT
+        headerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 15, 0)); 
+    
+    lblNombreUsuario = new JLabel("Bienvenido:");
+    lblRolUsuario = new JLabel("Rol:");
+    
+     // 3a. Estilo de los labels
+        // Cambiando el color del texto a negro para el fondo claro
+lblNombreUsuario.setForeground(new Color(51, 51, 51)); // Gris oscuro/casi negro
+lblRolUsuario.setForeground(new Color(0, 102, 204)); // Azul para el rol
+        lblNombreUsuario.setFont(lblNombreUsuario.getFont().deriveFont(Font.BOLD, 14f));
+    headerPanel.add(lblNombreUsuario);
+    headerPanel.add(lblRolUsuario);
 
-        init();
+    // 1. Añadir el header al NORTE del contenedor
+    mainContainer.add(headerPanel, BorderLayout.NORTH);
+    
+    // 2. Añadir el 'body' (el panel central) al CENTRO del contenedor
+    // body ya fue creado en initComponents()
+    mainContainer.add(body, BorderLayout.CENTER);
+    
+    // 3. Reemplazar el layout del JFrame
+    // Esto es necesario porque initComponents lo establece, pero esta vez,
+    // solo establecemos el JPanel que tiene el BorderLayout.
+    setContentPane(mainContainer);
+
+       // init();
     }
 
-    private void init() {
-        GlassPanePopup.install(this);
-        Notifications.getInstance().setJFrame(this);
-        MyDrawerBuilder myDrawerBuilder = new MyDrawerBuilder(this);
+    private void init(Usuario usuario) {
+    
+       
+        MyDrawerBuilder myDrawerBuilder = new MyDrawerBuilder(this,usuario);
         Drawer.getInstance().setDrawerBuilder(myDrawerBuilder);
         WindowsTabbed.getInstance().install(this, body);
      //  login();
@@ -54,14 +96,21 @@ public class Main extends javax.swing.JFrame {
       WindowsTabbed.getInstance().showTabbed(false);
        // loginForm.applyComponentOrientation(getComponentOrientation());
      //  setContentPane(loginForm);
+     
+     
         revalidate();
         repaint();
     }
 
-    public void showMainForm() {
-     WindowsTabbed.getInstance().showTabbed(true);
+    public void showMainForm(Usuario usuario) {
+        this.usuarioLogueado = usuario;
+        // Actualizar los labels con la información dinámica de la BD
+    lblNombreUsuario.setText("Bienvenido: " + usuario.getNombreCompleto());
+    lblRolUsuario.setText("Rol: " + usuario.getNombreRol());
+        init(usuario);
+        WindowsTabbed.getInstance().showTabbed(true);
         WindowsTabbed.getInstance().removeAllTabbed();
-        setContentPane(body);
+       // setContentPane(body);
         revalidate();
         repaint();
     }
@@ -84,6 +133,9 @@ public class Main extends javax.swing.JFrame {
     body.repaint();
 }
 
+    public Usuario getUsuarioLogueado() {
+        return usuarioLogueado;
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

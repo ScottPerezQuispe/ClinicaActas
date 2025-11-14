@@ -158,7 +158,7 @@
                                   <Component id="txtUsuario" max="32767" attributes="0"/>
                                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtContraseña" alignment="0" pref="343" max="32767" attributes="0"/>
-                                  <Component id="jButton1" alignment="0" min="-2" pref="93" max="-2" attributes="0"/>
+                                  <Component id="btnIngrear" alignment="0" min="-2" pref="93" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -180,7 +180,7 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="txtContraseña" min="-2" pref="40" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-                      <Component id="jButton1" min="-2" pref="36" max="-2" attributes="0"/>
+                      <Component id="btnIngrear" min="-2" pref="36" max="-2" attributes="0"/>
                       <EmptySpace pref="137" max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -232,7 +232,7 @@
             </Component>
             <Component class="javax.swing.JPasswordField" name="txtContrase&#xf1;a">
             </Component>
-            <Component class="javax.swing.JButton" name="jButton1">
+            <Component class="javax.swing.JButton" name="btnIngrear">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="66" green="66" red="0" type="rgb"/>
@@ -246,7 +246,7 @@
                 <Property name="text" type="java.lang.String" value="Ingresar"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnIngrearActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
