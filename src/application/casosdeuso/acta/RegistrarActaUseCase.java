@@ -19,7 +19,7 @@ public class RegistrarActaUseCase {
         this.repository = repository;
     }
 
-    public void Registrar(Acta acta) {
-        repository.Registrar(acta);
+    public boolean Registrar(Acta acta) {
+        return repository.Registrar(acta);
     }
 }
