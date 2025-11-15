@@ -10,7 +10,15 @@ package domain.entidades;
  */
 public class DetalleActa {
     private int IdDetalleActa;
-    
+    private int IdActa;
+
+    public int getIdActa() {
+        return IdActa;
+    }
+
+    public void setIdActa(int IdActa) {
+        this.IdActa = IdActa;
+    }
     // Mapeo al objeto Equipo completo (aunque en la DB solo se guarde IdEquipo)
     private int IdEquipo;
 

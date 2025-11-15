@@ -14,7 +14,7 @@ import java.util.List;
 public class Acta {
    private int IdActa;
     private Date Fecha; 
-    private int IdTipo; // Referencia al tipo de acta (Entrega/Recojo)
+    private String TipoActa; // Referencia al tipo de acta (Entrega/Recojo)
     
     // Mapeo de FKs a objetos de Dominio para mejor manejo
     private int IdEmpleado; // Asumiendo que existe la clase Empleado
@@ -23,7 +23,7 @@ public class Acta {
     
     private Date FechaSoporte;
     private Date FechaCoordinador;
-    private String Observacion;
+    private String Comentario;
     private int IdEstado;
     // 👉 Aquí está la lista de detalles del acta
     private List<DetalleActa> Detalles;
@@ -31,6 +31,18 @@ public class Acta {
   
     
      public Acta() {}
+
+    public Acta(Date Fecha, String TipoActa, int IdEmpleado, int IdUsuarioSoporte, String Comentario, List<DetalleActa> Detalles) {
+        this.Fecha = Fecha;
+        this.TipoActa = TipoActa;
+        this.IdEmpleado = IdEmpleado;
+        this.IdUsuarioSoporte = IdUsuarioSoporte;
+        this.Comentario = Comentario;
+        this.Detalles = Detalles;
+    }
+
+
+   
 
     public int getIdActa() {
         return IdActa;
@@ -48,12 +60,12 @@ public class Acta {
         this.Fecha = Fecha;
     }
 
-    public int getIdTipo() {
-        return IdTipo;
+    public String getTipoActa() {
+        return TipoActa;
     }
 
-    public void setIdTipo(int IdTipo) {
-        this.IdTipo = IdTipo;
+    public void setTipoActa(String TipoActa) {
+        this.TipoActa = TipoActa;
     }
 
     public int getIdEmpleado() {
@@ -96,12 +108,12 @@ public class Acta {
         this.FechaCoordinador = FechaCoordinador;
     }
 
-    public String getObservacion() {
-        return Observacion;
+    public String getComentario() {
+        return Comentario;
     }
 
-    public void setObservacion(String Observacion) {
-        this.Observacion = Observacion;
+    public void setComentario(String Comentario) {
+        this.Comentario = Comentario;
     }
 
     public int getIdEstado() {
