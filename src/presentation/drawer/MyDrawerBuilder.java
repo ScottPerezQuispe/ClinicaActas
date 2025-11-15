@@ -54,8 +54,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         
         return new SimpleHeaderData()
             .setIcon(new AvatarIcon(getClass().getResource("/presentation/image/profile.png"), 60, 60, 999))
-            .setTitle(nombre) 
-            .setDescription(rol);
+            .setTitle("") 
+            .setDescription("");
     }
     @Override
     public SimpleMenuOption getSimpleMenuOption() {
@@ -80,7 +80,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
            // "dashboard.svg",
             "user.svg",
             "pc.svg",
-            "calendar.svg",
+            "bandejaentrada.svg",
             "process.svg",
            // "forms.svg",
            // "chart.svg",
@@ -115,7 +115,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         } 
                          else if (index == 3) {
                            
-                              FrmActa_registro panel = new FrmActa_registro(); 
+                              FrmActa_registro panel = new FrmActa_registro(usuarioParaFormulario); 
                             mainFrame.showPanel(panel);
                         } 
                         else if (index == 9) {
