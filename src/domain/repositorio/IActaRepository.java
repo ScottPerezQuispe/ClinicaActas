@@ -12,4 +12,7 @@ import domain.entidades.Acta;
  */
 public interface IActaRepository {
      boolean Registrar(Acta acta);
+     Acta buscarPorId(int idActa);
+     boolean aprobar(int idActa, int idCoordinador);
+     boolean rechazar(int idActa, int idCoordinador);
 }

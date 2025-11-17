@@ -5,7 +5,10 @@
 package infrastructure.persistencia.repositorioimpl;
 
 import domain.entidades.Acta;
+import domain.entidades.Area;
 import domain.entidades.DetalleActa;
+import domain.entidades.Empleado;
+import domain.entidades.Equipo;
 import domain.repositorio.IActaRepository;
 import infrastructure.persistencia.conexion.MySQLConnection;
 import java.sql.*;
@@ -99,6 +102,123 @@ public class ActaRepositoryImpl implements IActaRepository {
             }
         }
         return exito;
+    }
+
+    @Override
+   public Acta buscarPorId(int idActa) {
+        String sql = "{CALL sp_ObtenerActaDetalle(?)}";
+        Acta acta = null;
+        List<DetalleActa> detalles = new ArrayList<>();
+
+        try (Connection conn = MySQLConnection.obtenerConexion();
+             CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setInt(1, idActa);
+            boolean hadResults = cs.execute();
+
+            // 1. Procesar el Primer Resultado: CABECERA DEL ACTA
+            if (hadResults) {
+                try (ResultSet rs = cs.getResultSet()) {
+                    if (rs.next()) {
+                   
+
+                        acta = new Acta(
+                            rs.getString("FechaRegistro"),
+                            rs.getString("TipoActa"),
+                            rs.getString("Comentario"),
+                            rs.getString("EmpleadoNombres"),
+                            rs.getString("EmpleadoArea"),
+                            rs.getString("RegistradorUsuario"),
+                            rs.getString("FechaSoporte"),
+                            rs.getString("AprobadorUsuario"),
+                            rs.getString("FechaCoordinador"),
+                            new ArrayList<>() // Inicializar la lista de detalles vacía
+                        );
+                    }
+                }
+            }
+
+            // 2. Procesar el Segundo Resultado: DETALLES DEL ACTA
+            if (acta != null && cs.getMoreResults()) {
+                try (ResultSet rsDetalle = cs.getResultSet()) {
+                    while (rsDetalle.next()) {
+                        // Mapear el Equipo
+                        Equipo equipo = new Equipo(
+                            rsDetalle.getInt("IdEquipo"),
+                            rsDetalle.getString("EquipoNombre"), // o serie
+                            rsDetalle.getString("EquipoMarca"),
+                            rsDetalle.getString("EquipoModelo"),
+                            0 // Estado (no esencial para el Detalle)
+                        );
+                        
+                        // Crear DetalleActa (la entidad de dominio)
+                        DetalleActa detalle = new DetalleActa();
+                        detalle.setIdDetalleActa(rsDetalle.getInt("IdDetalleActa"));
+                        detalle.setEquipo(equipo); 
+                      
+                        
+                        detalles.add(detalle);
+                    }
+                }
+                // Asignar los detalles al acta
+                acta.setDetalles(detalles);
+            }
+
+            return acta;
+
+        } catch (SQLException e) {
+            System.err.println("Error al buscar acta por ID: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean aprobar(int idActa, int idCoordinador) {
+       // Asumiendo que usas un SP llamado sp_aprobar_acta
+    final String SP_APROBAR_ACTA = "{CALL sp_Aprobar_acta(?, ?)}"; 
+    
+    try (Connection con = MySQLConnection.obtenerConexion();
+         CallableStatement cs = con.prepareCall(SP_APROBAR_ACTA)) {
+        
+        // Parámetros: ID del Acta y ID del Coordinador
+        cs.setInt(1, idActa);
+        cs.setInt(2, idCoordinador);
+
+        // Se espera que el SP retorne el número de filas afectadas
+        int filasAfectadas = cs.executeUpdate();
+        
+        return filasAfectadas > 0;
+
+    } catch (SQLException e) {
+        System.err.println("❌ Error al aprobar acta (SP): " + e.getMessage());
+        e.printStackTrace();
+        return false;
+    }
+    }
+
+    @Override
+    public boolean rechazar(int idActa, int idCoordinador) {
+        // Asumiendo que usas un SP llamado sp_rechazar_acta
+    final String SP_RECHAZAR_ACTA = "{CALL sp_rechazar_acta(?, ?)}"; 
+    
+    try (Connection con = MySQLConnection.obtenerConexion();
+         CallableStatement cs = con.prepareCall(SP_RECHAZAR_ACTA)) {
+        
+        // Parámetros: ID del Acta, ID del Coordinador, y el Comentario con el Motivo
+        cs.setInt(1, idActa);
+        cs.setInt(2, idCoordinador);
+        //cs.setString(3, comentario); // Actualiza el comentario en la tabla Acta
+
+        int filasAfectadas = cs.executeUpdate();
+        
+        return filasAfectadas > 0;
+
+    } catch (SQLException e) {
+        System.err.println("❌ Error al rechazar acta (SP): " + e.getMessage());
+        e.printStackTrace();
+        return false;
+    }
     }
     
 }
