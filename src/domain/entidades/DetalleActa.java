@@ -12,6 +12,9 @@ public class DetalleActa {
     private int IdDetalleActa;
     private int IdActa;
 
+    private Equipo Equipo;
+
+   
     public int getIdActa() {
         return IdActa;
     }
@@ -41,7 +44,13 @@ public class DetalleActa {
         this.IdEquipo = IdEquipo;
     }
 
-  
+   public Equipo getEquipo() {
+        return Equipo;
+    }
+
+    public void setEquipo(Equipo Equipo) {
+        this.Equipo = Equipo;
+    }
    
     
 }

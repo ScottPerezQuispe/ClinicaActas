@@ -4,12 +4,13 @@
  */
 package presentation.drawer;
 
-
 import domain.entidades.Usuario;
+import presentation.view.FrmActaVer;
 import presentation.view.FrmActa_registro;
 import presentation.view.FrmBandejaActa;
 import presentation.view.FrmProducto;
 import presentation.view.FrmUsuario;
+import presentation.view.Login;
 import presentation.view.Main;
 import raven.drawer.component.SimpleDrawerBuilder;
 import raven.drawer.component.footer.SimpleFooterData;
@@ -20,48 +21,44 @@ import raven.drawer.component.menu.MenuValidation;
 import raven.drawer.component.menu.SimpleMenuOption;
 import raven.swing.AvatarIcon;
 
-
 /**
  *
  * @author Scott.perez
  */
-
 // Agrega este nuevo método a tu clase MyDrawerBuilder
-
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
-    
-    // 1. Declarar la variable para guardar la referencia de Main
-    private final Main mainFrame; 
-    private final Usuario usuarioLogueado;
-   // 🎯 NUEVO CAMPO: Almacena el resultado final del encabezado
 
-   
+    // 1. Declarar la variable para guardar la referencia de Main
+    private final Main mainFrame;
+    private final Usuario usuarioLogueado;
+    // 🎯 NUEVO CAMPO: Almacena el resultado final del encabezado
+
     // 2. Crear un constructor que reciba la referencia
     public MyDrawerBuilder(Main mainFrame, Usuario usuario) {
         this.mainFrame = mainFrame;
         this.usuarioLogueado = usuario;
-   
+
     }
-    
- 
-@Override
+
+    @Override
     public SimpleHeaderData getSimpleHeaderData() {
         // 🎯 LÓGICA CLAVE: Chequear this.usuarioLogueado, que será null en la primera llamada.
         // Esto garantiza que siempre devolvemos un objeto SimpleHeaderData NO NULO.
-        
-        String nombre = (this.usuarioLogueado != null) ? this.usuarioLogueado.getNombreCompleto(): "Cargando...";
-        String rol = (this.usuarioLogueado != null) ? this.usuarioLogueado.getNombreRol(): "Por favor, espere.";
-        
+
+        String nombre = (this.usuarioLogueado != null) ? this.usuarioLogueado.getNombreCompleto() : "Cargando...";
+        String rol = (this.usuarioLogueado != null) ? this.usuarioLogueado.getNombreRol() : "Por favor, espere.";
+
         return new SimpleHeaderData()
-            .setIcon(new AvatarIcon(getClass().getResource("/presentation/image/profile.png"), 60, 60, 999))
-            .setTitle("") 
-            .setDescription("");
+                .setIcon(new AvatarIcon(getClass().getResource("/presentation/image/profile.png"), 60, 60, 999))
+                .setTitle("")
+                .setDescription("");
     }
+
     @Override
     public SimpleMenuOption getSimpleMenuOption() {
-        
+
         String menus[][] = {
-           // {"~MAIN~"},
+            // {"~MAIN~"},
             //{"Dashboard"},
             {"~Mantenimiento~"},
             {"Empleado"},
@@ -69,23 +66,23 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             //{"Calendar"},
             {"~Acta~"},
             {"Bandeja"},
-          {"Registrar"},
+            {"Registrar"},
             //{"~OTHER~"},
-           // {"Charts", "Apex", "Flot", "Sparkline"},
+            // {"Charts", "Apex", "Flot", "Sparkline"},
             //{"Icons", "Feather Icons", "Flag Icons", "Mdi Icons"},
             //{"Special Pages", "Blank page", "Faq", "Invoice", "Profile", "Pricing", "Timeline"},
             {"Logout"}};
 
         String icons[] = {
-           // "dashboard.svg",
+            // "dashboard.svg",
             "user.svg",
             "pc.svg",
             "bandejaentrada.svg",
             "process.svg",
-           // "forms.svg",
-           // "chart.svg",
-           // "icon.svg",
-           // "page.svg",
+            // "forms.svg",
+            // "chart.svg",
+            // "icon.svg",
+            // "page.svg",
             "logout.svg"};
 
         return new SimpleMenuOption()
@@ -96,32 +93,40 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .addMenuEvent(new MenuEvent() {
                     @Override
                     public void selected(MenuAction action, int index, int subIndex) {
-                         // 🎯 FORMA DE ACCEDER DENTRO DE MenuEvent:
-                            Usuario usuarioParaFormulario = MyDrawerBuilder.this.usuarioLogueado;
-                            
-                        if (index == 0){
-                            
-                            FrmUsuario panel = new FrmUsuario(); 
+                        // 🎯 FORMA DE ACCEDER DENTRO DE MenuEvent:
+                        Usuario usuarioParaFormulario = MyDrawerBuilder.this.usuarioLogueado;
+
+                        if (index == 0) {
+
+                            FrmUsuario panel = new FrmUsuario();
                             mainFrame.showPanel(panel);
+                        } else if (index == 1) {
+                            FrmProducto panel = new FrmProducto();
+                            mainFrame.showPanel(panel);
+                        } else if (index == 2) {
+                            FrmBandejaActa panel = new FrmBandejaActa();
+
+                            mainFrame.showPanel(panel);
+                        } else if (index == 3) {
+
+                            FrmActa_registro panel = new FrmActa_registro(usuarioParaFormulario); 
+                            //FrmActaVer panel = new FrmActaVer(usuarioParaFormulario, 1);
+                            mainFrame.showPanel(panel);
+                        } else if (index == 4) {
+
+                            Main mainInstance = new Main();
+
+                            // Opcional: Asignar a la variable estática 'main' en la clase Main
+                            // para compatibilidad con otros módulos.
+                            Main.main = mainInstance;
+
+                            Login LoginFrame = new Login(mainInstance);
+                            LoginFrame.setVisible(true);
+                            LoginFrame.pack();
+                            LoginFrame.setLocationRelativeTo(null);
+                            MyDrawerBuilder.this.mainFrame.dispose();
                         }
-                        else if (index == 1) {
-                            FrmProducto panel = new FrmProducto(); 
-                            mainFrame.showPanel(panel);
-                        } 
-                        else if (index == 2) {
-                           FrmBandejaActa panel = new FrmBandejaActa(); 
-                          
-                            mainFrame.showPanel(panel);
-                        } 
-                         else if (index == 3) {
-                           
-                              FrmActa_registro panel = new FrmActa_registro(usuarioParaFormulario); 
-                            mainFrame.showPanel(panel);
-                        } 
-                        else if (index == 9) {
-                            Main.main.login();
-                        }
-                        System.out.println("Menu selected " + index + " " + subIndex+ " "+ usuarioParaFormulario.getNombreCompleto());
+                        System.out.println("Menu selected " + index + " " + subIndex + " " + usuarioParaFormulario.getNombreCompleto());
                     }
                 })
                 .setMenuValidation(new MenuValidation() {
