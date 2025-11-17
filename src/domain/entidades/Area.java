@@ -15,10 +15,10 @@ public class Area {
 
     public Area(){
     }
-    public Area(int IdArea, String Nombre, boolean Activo) {
+    public Area(int IdArea, String Nombre) {
         this.IdArea = IdArea;
         this.Nombre = Nombre;
-        this.Activo = Activo;
+
     }
 
     public int getIdArea() {
