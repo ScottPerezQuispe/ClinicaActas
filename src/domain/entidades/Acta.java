@@ -25,6 +25,7 @@ public class Acta {
     private String FechaCoordinador;
     private String Comentario;
     private int IdEstado;
+    private String EstadoNombre;
     // 👉 Aquí está la lista de detalles del acta
     private List<DetalleActa> Detalles;
     
@@ -196,6 +197,14 @@ public class Acta {
         this.AprobadorUsuario = AprobadorUsuario;
     }
 
+    //Nombre de Estado
+    
+    public String getEstadoNombre() { 
+        return EstadoNombre; }
+    
+
+    public void setEstadoNombre(String EstadoNombre) {
+        this.EstadoNombre = EstadoNombre; }
    
     
 }

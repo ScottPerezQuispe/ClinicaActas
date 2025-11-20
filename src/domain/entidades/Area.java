@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package domain.entidades;
 
-/**
- *
- * @author Scott.perez
- */
 public class Area {
     private int IdArea;
     private String Nombre;
@@ -15,10 +7,10 @@ public class Area {
 
     public Area(){
     }
-    public Area(int IdArea, String Nombre) {
+    public Area(int IdArea, String Nombre, boolean Activo) {
         this.IdArea = IdArea;
         this.Nombre = Nombre;
-
+        this.Activo = Activo;
     }
 
     public int getIdArea() {
@@ -44,8 +36,12 @@ public class Area {
     public void setActivo(boolean Activo) {
         this.Activo = Activo;
     }
+    
+    @Override
+    public String toString() {
+        return this.Nombre; 
+    }
 
   
-    
     
 }
