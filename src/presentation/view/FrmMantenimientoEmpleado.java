@@ -2,11 +2,13 @@ package presentation.view;
 
 import application.casosdeuso.area.ListarAreaUseCase;
 import application.casosdeuso.empleado.ActualizarEmpleadoUseCase;
+import application.casosdeuso.empleado.ListarEmpleadoUseCase;
 import application.casosdeuso.empleado.RegistrarEmpleadoUseCase;
 import domain.entidades.Area;
 import domain.entidades.Empleado;
 import infrastructure.persistencia.repositorioimpl.AreaRepositoryImpl;
 import infrastructure.persistencia.repositorioimpl.EmpleadoRepositoryImpl;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -27,13 +29,14 @@ public class FrmMantenimientoEmpleado extends javax.swing.JPanel {
     
     public FrmMantenimientoEmpleado() {
         initComponents();
+        cargarAreasEnComboBox(); // 🔹 llenar combo al abrir
     }
     
     // 🚨 Nuevo Constructor de Edición (usado por btnEditar)
     public FrmMantenimientoEmpleado(FrmUsuario padre, Empleado empleado) {
         this();
         this.formularioPadre = padre;
-        cargarAreas(); // 🔹 llenar combo al abrir
+        cargarAreasEnComboBox(); // <-- combo empleado
         this.empleadoEnEdicion = empleado; // Modo Edición
         
         // 🚨 Cargar datos al iniciar el panel
@@ -42,7 +45,7 @@ public class FrmMantenimientoEmpleado extends javax.swing.JPanel {
         }
     }
     
-    // Constructor con referencia al padre (usado por FrmProducto)
+    // Constructor con referencia al padre (usado por FrmUsuario)
    public FrmMantenimientoEmpleado(FrmUsuario padre) {
     this();
     this.formularioPadre = padre;
@@ -66,22 +69,30 @@ public class FrmMantenimientoEmpleado extends javax.swing.JPanel {
         // 🔹 Guardar el área del empleado
         if (empleado.getArea() != null) {
             areaSeleccionada = empleado.getArea();
-            cb_Area.setSelectedItem(areaSeleccionada.getNombre());
+            cb_Area.setSelectedItem(areaSeleccionada);
         }
     }
     
-    private void cargarAreas() {
-        ListarAreaUseCase listar = new ListarAreaUseCase(new AreaRepositoryImpl());
-      
-       DefaultComboBoxModel<Area> model = new DefaultComboBoxModel<>();
-       
-        for (Area area : listar.listar()) {
-            model.addElement(area); 
+    private Area crearPlaceholderArea() {
+        // ID 0 o -1 como valor inválido para validar después
+        return new Area(0,"-- Seleccione un Área --",true);
+    }
+
+    
+    private void cargarAreasEnComboBox() {
+        ListarAreaUseCase areaUseCase = new ListarAreaUseCase(new AreaRepositoryImpl());
+        List<Area> areas = areaUseCase.listar();
+
+        DefaultComboBoxModel<Area> model = new DefaultComboBoxModel<>();
+        model.addElement(crearPlaceholderArea());
+
+        for (Area area : areas) {
+            model.addElement(area);
         }
 
         cb_Area.setModel(model);
     }
-    
+
     
     public void ActualizarEmpleado() {
     try {
@@ -89,11 +100,16 @@ public class FrmMantenimientoEmpleado extends javax.swing.JPanel {
             String nombre = txt_Nombre.getText().trim();
             String apellido = txt_Apellido.getText().trim();
             String dni = txt_DNI.getText().trim();
-            String nombreAreaSeleccionada = cb_Area.getSelectedItem().toString();
-            Area area = new Area();
-            area.setNombre(nombreAreaSeleccionada);
-
+            Area area = (Area) cb_Area.getSelectedItem();
+            
             // 2️⃣ Validaciones
+            
+            if (area.getIdArea() == 0) {
+                JOptionPane.showMessageDialog(this, "Seleccione un área válida.");
+                return;
+            }
+            
+
             if (nombre.isEmpty() || apellido.isEmpty() || dni.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
                 return; // 🛑 Detiene la ejecución si falla la validación
@@ -104,6 +120,7 @@ public class FrmMantenimientoEmpleado extends javax.swing.JPanel {
             // 4️⃣ Lógica de Base de Datos (SÍNCRONA)
             ActualizarEmpleadoUseCase registrar = new ActualizarEmpleadoUseCase(new EmpleadoRepositoryImpl());
             registrar.Actualizar(empleado); 
+            wasSuccessful = true;
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "⚠️ Ocurrió un error: " + e.getMessage());
@@ -116,8 +133,7 @@ public class FrmMantenimientoEmpleado extends javax.swing.JPanel {
             String nombre = txt_Nombre.getText().trim();
             String apellido = txt_Apellido.getText().trim();
             String dni = txt_DNI.getText().trim();
-            Area area = new Area();
-            area.setIdArea(1);
+            Area area = (Area) cb_Area.getSelectedItem();
 
             // 2️⃣ Validaciones
             if (nombre.isEmpty() || apellido.isEmpty() || dni.isEmpty()) {
@@ -136,8 +152,10 @@ public class FrmMantenimientoEmpleado extends javax.swing.JPanel {
             // 4️⃣ Lógica de Base de Datos (SÍNCRONA)
             RegistrarEmpleadoUseCase registrar = new RegistrarEmpleadoUseCase(new EmpleadoRepositoryImpl());
             registrar.Registrar(nuevo); // ¡Esto bloquea la UI brevemente!
+            wasSuccessful = true;
 
         } catch (Exception e) {
+            wasSuccessful = true;
             JOptionPane.showMessageDialog(this, "⚠️ Ocurrió un error: " + e.getMessage());
         }
     }
