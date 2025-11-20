@@ -30,15 +30,7 @@ public class FrmActaVer extends javax.swing.JPanel {
     private void cargarDatosActa(int idActa) {
 
         EditarActaUseCase consultarUseCase = new EditarActaUseCase(new ActaRepositoryImpl());
-        actaOriginal = consultarUseCase.buscarPorId(idActa); // Asumimos que esto retorna el Acta completo
-
-        if (actaOriginal == null) {
-            JOptionPane.showMessageDialog(this,
-                    "No se pudo cargar el Acta con ID: " + idActa,
-                    "Error de Carga",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        actaOriginal = consultarUseCase.buscarPorId(idActa); 
 
         lblTipo.setText(actaOriginal.getTipoActa());
         lblEmpleado.setText(actaOriginal.getEmpleadoNombres());
@@ -54,7 +46,7 @@ public class FrmActaVer extends javax.swing.JPanel {
     }
 
     private void llenarTablaEquipos(List<DetalleActa> detalles) {
-        // Limpiar filas existentes (si las hay)
+       
         tableModel.setRowCount(0);
 
         for (DetalleActa detalle : detalles) {
@@ -83,32 +75,25 @@ public class FrmActaVer extends javax.swing.JPanel {
     }
 
     private void aprobarActa() {
-        if (actaOriginal == null) {
-            JOptionPane.showMessageDialog(this, "Debe cargar un Acta primero.", "Error", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
+       
         try {
             // Confirmación
             int confirm = JOptionPane.showConfirmDialog(this,
                     "¿Está seguro de que desea APROBAR esta Acta?",
                     "Confirmar Aprobación", JOptionPane.YES_NO_OPTION);
-
             if (confirm == JOptionPane.YES_OPTION) {
 
-                // 1. Obtener datos necesarios: ID del acta y ID del usuario que aprueba.
                 int idActa = this.idActaAEditar;
-                int idCoordinador = this.usuarioLogueado.getIdUsuario(); // Asumiendo que el usuario logueado es el coordinador
+                int idCoordinador = this.usuarioLogueado.getIdUsuario(); 
 
-                // 2. Ejecutar Caso de Uso de Aprobación
+             
                 AprobarActaUseCase aprobarUseCase = new AprobarActaUseCase(new ActaRepositoryImpl());
-                boolean exito = aprobarUseCase.ejecutar(idActa, idCoordinador);
+                boolean exito = aprobarUseCase.aprobar(idActa, idCoordinador);
 
                 if (exito) {
                     JOptionPane.showMessageDialog(this, "Acta APROBADA exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
-                    btnAprobar.setEnabled(false);
-                    btnAprobar.setEnabled(false);
+                   // btnAprobar.setEnabled(false);
+                   // btnAprobar.setEnabled(false);
 
                     cargarDatosActa(idActa);
                 } else {
@@ -122,40 +107,23 @@ public class FrmActaVer extends javax.swing.JPanel {
     }
 
     private void rechazarActa() {
-        if (actaOriginal == null) {
-            JOptionPane.showMessageDialog(this, "Debe cargar un Acta primero.", "Error", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
+       
         try {
-            // 1. Solicitar el motivo del rechazo
-            /*String motivoRechazo = JOptionPane.showInputDialog(this, 
-            "Ingrese el motivo del rechazo del Acta:", 
-            "Rechazar Acta", JOptionPane.WARNING_MESSAGE);*/
-
-            //if (motivoRechazo != null && !motivoRechazo.trim().isEmpty()) {
-            // 2. Obtener datos necesarios
+           
             int idActa = this.idActaAEditar;
             int idCoordinador = this.usuarioLogueado.getIdUsuario();
-            //String comentarioActualizado = actaOriginal.getComentario() + "\n[RECHAZO] Motivo: " + motivoRechazo;
-
-            // 3. Ejecutar Caso de Uso de Rechazo
+            
             RechazarActaUseCase rechazarUseCase = new RechazarActaUseCase(new ActaRepositoryImpl());
             boolean exito = rechazarUseCase.ejecutar(idActa, idCoordinador);
 
             if (exito) {
                 JOptionPane.showMessageDialog(this, "Acta RECHAZADA exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                // Opcional: Deshabilitar botones
-                btnRechazar.setEnabled(false);
-                btnAprobar.setEnabled(false);
-                // Recargar datos para reflejar el nuevo estado y el comentario
-                cargarDatosActa(idActa);
+                
+               
             } else {
                 JOptionPane.showMessageDialog(this, "Fallo al rechazar el Acta. Contacte a soporte.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            // } else if (motivoRechazo != null) {
-            //   JOptionPane.showMessageDialog(this, "El motivo de rechazo no puede estar vacío.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            // }
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error inesperado al rechazar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -197,7 +165,8 @@ public class FrmActaVer extends javax.swing.JPanel {
 
         jButton3.setText("Cancelar");
 
-        btnAprobar.setText("Guardar");
+        btnAprobar.setText("Aprobar");
+        btnAprobar.setToolTipText("");
         btnAprobar.setActionCommand("Aprobar");
 
         txtComentario.setColumns(20);
@@ -300,22 +269,25 @@ public class FrmActaVer extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(lblRegistradoPor)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 616, Short.MAX_VALUE)
+                                                .addComponent(jLabel9))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(lblTipo)
+                                                    .addComponent(lblEmpleado))
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(jLabel5)
+                                                    .addComponent(jLabel4))))
+                                        .addGap(43, 43, 43))
+                                    .addGroup(layout.createSequentialGroup()
                                         .addComponent(lblFechaRegistro)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(lblRegistradoPor)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 616, Short.MAX_VALUE)
-                                        .addComponent(jLabel9))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lblTipo)
-                                            .addComponent(lblEmpleado))
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel5)
-                                            .addComponent(jLabel4))))
-                                .addGap(43, 43, 43)
+                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(txtArea, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
