@@ -17,7 +17,7 @@ public class AprobarActaUseCase {
         this.actaRepository = actaRepository;
     }
 
-    public boolean ejecutar(int idActa, int idCoordinador) {
+    public boolean aprobar(int idActa, int idCoordinador) {
         return actaRepository.aprobar(idActa, idCoordinador);
     }
 }
