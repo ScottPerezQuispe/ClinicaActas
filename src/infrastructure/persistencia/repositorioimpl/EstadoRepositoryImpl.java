@@ -1,7 +1,7 @@
 package infrastructure.persistencia.repositorioimpl;
 
-import domain.entidades.Area;
-import domain.repositorio.IAreaRepository;
+import domain.entidades.Estado;
+import domain.repositorio.IEstadoRepository;
 import infrastructure.persistencia.conexion.MySQLConnection;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -9,24 +9,24 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AreaRepositoryImpl implements IAreaRepository {
+public class EstadoRepositoryImpl implements IEstadoRepository{
 
     @Override
-    public List<Area> Listar() {
-        List<Area> lista = new ArrayList<>();
-        String sql = "{CALL sp_ListarAreas()}";  // 🔹 CORREGIDO
+    public List<Estado> Listar() {
+        List<Estado> lista = new ArrayList<>();
+        String sql = "{CALL sp_ListarEstados()}";  // 🔹 CORREGIDO
 
         try (Connection con = MySQLConnection.obtenerConexion();
              CallableStatement cs = con.prepareCall(sql);
              ResultSet rs = cs.executeQuery()) {
 
             while (rs.next()) {
-                Area area = new Area();
-                area.setIdArea(rs.getInt("IdArea"));   // 🔹 CORRECTO
-                area.setNombre(rs.getString("Nombre"));  
-                area.setActivo(rs.getBoolean("Activo"));
+                Estado estado = new Estado();
+                estado.setIdEstado(rs.getInt("IdEstado"));   // 🔹 CORRECTO
+                estado.setNombre(rs.getString("Nombre"));  
+                estado.setDescripcion(rs.getString("Descripcion"));
 
-                lista.add(area);
+                lista.add(estado);
             }
 
         } catch (Exception e) {

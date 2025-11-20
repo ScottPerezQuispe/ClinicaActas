@@ -5,6 +5,7 @@
 package domain.repositorio;
 
 import domain.entidades.Acta;
+import java.util.List;
 
 /**
  *
@@ -15,4 +16,5 @@ public interface IActaRepository {
      Acta buscarPorId(int idActa);
      boolean aprobar(int idActa, int idCoordinador);
      boolean rechazar(int idActa, int idCoordinador);
+     List<Acta> Listar();
 }

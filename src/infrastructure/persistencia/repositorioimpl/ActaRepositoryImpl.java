@@ -5,9 +5,7 @@
 package infrastructure.persistencia.repositorioimpl;
 
 import domain.entidades.Acta;
-import domain.entidades.Area;
 import domain.entidades.DetalleActa;
-import domain.entidades.Empleado;
 import domain.entidades.Equipo;
 import domain.repositorio.IActaRepository;
 import infrastructure.persistencia.conexion.MySQLConnection;
@@ -127,7 +125,7 @@ public class ActaRepositoryImpl implements IActaRepository {
                             rs.getString("TipoActa"),
                             rs.getString("Comentario"),
                             rs.getString("EmpleadoNombres"),
-                            rs.getString("EmpleadoArea"),
+                            rs.getString("Acta"),
                             rs.getString("RegistradorUsuario"),
                             rs.getString("FechaSoporte"),
                             rs.getString("AprobadorUsuario"),
@@ -219,6 +217,38 @@ public class ActaRepositoryImpl implements IActaRepository {
         e.printStackTrace();
         return false;
     }
+    }
+
+    @Override
+    public List<Acta> Listar() {
+        List<Acta> lista = new ArrayList<>();
+        String sql = "{CALL sp_ListarActas()}";  // 🔹 CORREGIDO
+
+        try (Connection con = MySQLConnection.obtenerConexion();
+             CallableStatement cs = con.prepareCall(sql);
+             ResultSet rs = cs.executeQuery()) {
+
+            while (rs.next()) {
+            Acta a = new Acta();
+            a.setIdActa(rs.getInt("IdActa"));
+            a.setFecha(rs.getDate("Fecha"));
+            a.setTipoActa(rs.getString("TipoActa"));
+            a.setEmpleadoNombres(rs.getString("EmpleadoNombres"));
+            a.setEmpleadoArea(rs.getString("EmpleadoArea"));
+            a.setRegistradorUsuario(rs.getString("RegistradorUsuario"));
+            a.setFechaSoporte(rs.getString("FechaSoporte"));
+            a.setAprobadorUsuario(rs.getString("AprobadorUsuario"));
+            a.setFechaCoordinador(rs.getString("FechaCoordinador"));
+            a.setComentario(rs.getString("Comentario"));
+            a.setEstadoNombre(rs.getString("Estado"));
+
+                lista.add(a);
+            }
+
+        } catch (Exception e) {
+            System.err.println("❌ Error al listar áreas: " + e.getMessage());
+        }
+        return lista;
     }
     
 }
