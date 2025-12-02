@@ -2,28 +2,39 @@ package presentation.view;
 
 import application.casosdeuso.acta.AprobarActaUseCase;
 import application.casosdeuso.acta.EditarActaUseCase;
+import application.casosdeuso.acta.GenerarActaPDFUseCase;
 import application.casosdeuso.acta.RechazarActaUseCase;
 import domain.entidades.Acta;
 import domain.entidades.DetalleActa;
 import domain.entidades.Usuario;
+import infrastructure.persistencia.repositorioimpl.ActaPdfGeneratorImpl;
 import infrastructure.persistencia.repositorioimpl.ActaRepositoryImpl;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import static presentation.view.FrmActa_registro.parentFrame;
 
 public class FrmActaVer extends javax.swing.JPanel {
 
+    public static Main parentFrame;
     private final Usuario usuarioLogueado;
     private DefaultTableModel tableModel;
     private final int idActaAEditar;
     private Acta actaOriginal;
 
-    public FrmActaVer(Usuario usuario, int idActa) {
+    public FrmActaVer(Main parentFrame,Usuario usuario, int idActa) {
+        this.parentFrame = parentFrame;
         this.usuarioLogueado = usuario;
         this.idActaAEditar = idActa;
         initComponents();
         configurarTablaYListeners();
         cargarDatosActa(idActa);
+        
+        if (usuario.getNombreRol().equals(("Soporte"))){
+          
+            btnRechazar.setVisible(false);
+            btnAprobar.setVisible(false);
+        }
     }
 
     /*EDITAR*/
@@ -43,6 +54,12 @@ public class FrmActaVer extends javax.swing.JPanel {
         txtComentario.setText(actaOriginal.getComentario());
 
         llenarTablaEquipos(actaOriginal.getDetalles());
+        
+        if (actaOriginal.getIdEstado()==2){
+          
+            btnRechazar.setVisible(false);
+            btnAprobar.setVisible(false);
+        }
     }
 
     private void llenarTablaEquipos(List<DetalleActa> detalles) {
@@ -71,9 +88,32 @@ public class FrmActaVer extends javax.swing.JPanel {
 
         btnAprobar.addActionListener(e -> aprobarActa());
         btnRechazar.addActionListener(e -> rechazarActa());
-
+        btnCancelar.addActionListener(e -> cancelarActa());
+        btnDescargar.addActionListener(e -> DescargarPDF());
     }
 
+    private void DescargarPDF(){
+         try {
+       // Acta acta = obtenerActaSeleccionada(); // tú lo construyes aquí
+
+        GenerarActaPDFUseCase useCase = new GenerarActaPDFUseCase(
+            new ActaPdfGeneratorImpl()
+        );
+
+        String ruta = useCase.ejecutar(this.actaOriginal);
+
+        JOptionPane.showMessageDialog(this, 
+            "PDF generado correctamente:\n" + ruta);
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+    }
+    }
+    private void cancelarActa(){
+        FrmBandejaActa panel = new FrmBandejaActa( parentFrame, usuarioLogueado);
+        this.parentFrame.showPanel(panel);    
+    }
+    
     private void aprobarActa() {
        
         try {
@@ -86,16 +126,15 @@ public class FrmActaVer extends javax.swing.JPanel {
                 int idActa = this.idActaAEditar;
                 int idCoordinador = this.usuarioLogueado.getIdUsuario(); 
 
-             
                 AprobarActaUseCase aprobarUseCase = new AprobarActaUseCase(new ActaRepositoryImpl());
                 boolean exito = aprobarUseCase.aprobar(idActa, idCoordinador);
 
                 if (exito) {
                     JOptionPane.showMessageDialog(this, "Acta APROBADA exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                   // btnAprobar.setEnabled(false);
-                   // btnAprobar.setEnabled(false);
-
-                    cargarDatosActa(idActa);
+                  
+                    FrmBandejaActa panel = new FrmBandejaActa( parentFrame, usuarioLogueado);
+                    this.parentFrame.showPanel(panel);     
+                    //cargarDatosActa(idActa);
                 } else {
                     JOptionPane.showMessageDialog(this, "Fallo al aprobar el Acta. Contacte a soporte.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -134,7 +173,7 @@ public class FrmActaVer extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton3 = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         btnAprobar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtComentario = new javax.swing.JTextArea();
@@ -159,15 +198,15 @@ public class FrmActaVer extends javax.swing.JPanel {
         lblAprobadoPor = new javax.swing.JLabel();
         lblFechaAprobado = new javax.swing.JLabel();
         btnRechazar = new javax.swing.JButton();
+        btnDescargar = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(1190, 613));
         setRequestFocusEnabled(false);
 
-        jButton3.setText("Cancelar");
+        btnCancelar.setText("Cancelar");
 
         btnAprobar.setText("Aprobar");
         btnAprobar.setToolTipText("");
-        btnAprobar.setActionCommand("Aprobar");
 
         txtComentario.setColumns(20);
         txtComentario.setRows(5);
@@ -222,11 +261,11 @@ public class FrmActaVer extends javax.swing.JPanel {
         lblEmpleado.setText("lblEmpleado");
         lblEmpleado.setToolTipText("");
 
-        lblRegistradoPor.setText("jLabel8");
+        lblRegistradoPor.setText("registradopor");
 
         jLabel8.setText("Fecha registro:");
 
-        lblFechaRegistro.setText("jLabel9");
+        lblFechaRegistro.setText("fecharegistro");
 
         jLabel9.setText("Aprobado por:");
 
@@ -238,6 +277,8 @@ public class FrmActaVer extends javax.swing.JPanel {
         lblFechaAprobado.setText("Fecha");
 
         btnRechazar.setText("Rechazar");
+
+        btnDescargar.setText("Descargar a PDF");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -253,7 +294,7 @@ public class FrmActaVer extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jLabel6)))
-                        .addGap(0, 789, Short.MAX_VALUE))
+                        .addGap(0, 791, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -272,7 +313,7 @@ public class FrmActaVer extends javax.swing.JPanel {
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                                 .addComponent(lblRegistradoPor)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 616, Short.MAX_VALUE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(jLabel9))
                                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -285,7 +326,7 @@ public class FrmActaVer extends javax.swing.JPanel {
                                         .addGap(43, 43, 43))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(lblFechaRegistro)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 574, Short.MAX_VALUE)
                                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -298,11 +339,13 @@ public class FrmActaVer extends javax.swing.JPanel {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnDescargar)
+                .addGap(18, 18, 18)
                 .addComponent(btnAprobar)
                 .addGap(24, 24, 24)
                 .addComponent(btnRechazar)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3)
+                .addComponent(btnCancelar)
                 .addGap(13, 13, 13))
         );
         layout.setVerticalGroup(
@@ -343,8 +386,9 @@ public class FrmActaVer extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAprobar)
-                    .addComponent(jButton3)
-                    .addComponent(btnRechazar))
+                    .addComponent(btnCancelar)
+                    .addComponent(btnRechazar)
+                    .addComponent(btnDescargar))
                 .addContainerGap(156, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -352,8 +396,9 @@ public class FrmActaVer extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAprobar;
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnDescargar;
     private javax.swing.JButton btnRechazar;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

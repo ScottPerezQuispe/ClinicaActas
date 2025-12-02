@@ -12,9 +12,9 @@ import java.sql.SQLException;
  */
 public class MySQLConnection {
     
-    private static final String URL = "jdbc:mysql://zl803t.h.filess.io:3306/BD_CLINICA_deepcrewis?useSSL=false&serverTimezone=UTC";
-    private static final String USER = "BD_CLINICA_deepcrewis";
-    private static final String PASSWORD = "5aef78f4e6641b796b01d347ce21d95e581b9c57";
+    private static final String URL = "jdbc:mysql://localhost/BD_CLINICA_deepcrewis?useSSL=false&serverTimezone=UTC";
+    private static final String USER = "root";
+    private static final String PASSWORD = "123456";
     private static Connection conexion = null;
     // Constructor privado: patrón Singleton
     private MySQLConnection() {}

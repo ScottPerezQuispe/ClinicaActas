@@ -4,11 +4,9 @@ import application.casosdeuso.acta.ListarActaUseCase;
 import application.casosdeuso.estado.ListarEstadoUseCase;
 import domain.entidades.Acta;
 import domain.entidades.Estado;
+import domain.entidades.Usuario;
 import infrastructure.persistencia.repositorioimpl.ActaRepositoryImpl;
 import infrastructure.persistencia.repositorioimpl.EstadoRepositoryImpl;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
@@ -17,8 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 public class FrmBandejaActa extends javax.swing.JPanel {
-
-    public FrmBandejaActa() {
+    public static Main parentFrame;
+    private Usuario usuarioLogueado;
+    public FrmBandejaActa(Main parentFrame,Usuario usuario) {
+        this.parentFrame = parentFrame; // ⬅️ La guarda
+        this.usuarioLogueado = usuario;
         initComponents();
         cargarEstadoEnComboBox();
         cargarTabla();
@@ -50,13 +51,13 @@ public class FrmBandejaActa extends javax.swing.JPanel {
         DefaultTableModel modelo = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 10; // Solo la columna de botones
+                return column == 9; // Solo la columna de botones
             }
         };
 
         modelo.setColumnIdentifiers(new Object[]{
-            "ID", "Fecha", "Tipo", "Empleado", "Área", "Registrador",
-            "Soporte", "Aprobador", "Comentario", "Estado", "Acciones"
+            "Codigo", "Fecha", "Tipo", "Empleado", "Área", "Registrador",
+            "Soporte", "Aprobador", "Estado", "Acciones"
         });
 
         for (Acta a : lista) {
@@ -65,21 +66,27 @@ public class FrmBandejaActa extends javax.swing.JPanel {
             JPanel acciones = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 0));
 
             // ✔ Botón verde
-            JButton btnOk = new JButton("A");
-            btnOk.putClientProperty("JButton.buttonType", "roundRect");
-            btnOk.setPreferredSize(new Dimension(40, 28));
-            btnOk.setBackground(new Color(0, 180, 0));   // Verde
-            btnOk.setForeground(Color.WHITE);
+            JButton btnOk = new JButton("Ver");
+           // btnOk.putClientProperty("JButton.buttonType", "roundRect");
+          //  btnOk.setPreferredSize(new Dimension(40, 28));
+           // btnOk.setBackground(new Color(0, 180, 0));   // Verde
+           // btnOk.setForeground(Color.WHITE);
 
-            // ❌ Botón rojo
+            // *** 🔑 LÓGICA CLAVE: ActionListener para abrir la vista ***
+            btnOk.addActionListener(e -> {
+              
+                  abrirVistaActa(a.getIdActa());
+            });
+            
+         /*   // ❌ Botón rojo
             JButton btnNo = new JButton("R");
             btnNo.putClientProperty("JButton.buttonType", "roundRect");
             btnNo.setPreferredSize(new Dimension(40, 28));
             btnNo.setBackground(new Color(200, 0, 0));   // Rojo
             btnNo.setForeground(Color.WHITE);
-
+*/
             acciones.add(btnOk);
-            acciones.add(btnNo);
+           // acciones.add(btnNo);
 
             modelo.addRow(new Object[]{
                 a.getIdActa(),
@@ -90,7 +97,7 @@ public class FrmBandejaActa extends javax.swing.JPanel {
                 a.getRegistradorUsuario(),
                 a.getFechaSoporte(),
                 a.getAprobadorUsuario(),
-                a.getComentario(),
+            //  a.getComentario(),
                 a.getEstadoNombre(),
                 acciones
             });
@@ -99,23 +106,46 @@ public class FrmBandejaActa extends javax.swing.JPanel {
         tb_Acta.setModel(modelo);
 
         // 👉 Renderer para que se muestren los botones en la tabla
-        tb_Acta.getColumnModel().getColumn(10).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
+   /*     tb_Acta.getColumnModel().getColumn(10).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
             return (Component) value;
-        });
+        });*/
+        
+    // 1. Asigna el Renderer (Para la visualización del componente)
+  tb_Acta.getColumnModel().getColumn(9).setCellRenderer(new PanelRenderer());
+
+  // 2. 🔑 Asigna el PanelEditor, pasándole 'this' (la bandeja) para que pueda llamar a abrirVistaActaPublic()
+  tb_Acta.getColumnModel().getColumn(9).setCellEditor(new PanelEditor(this));
     }
     
+ // 3. Método que ejecuta la apertura de la nueva vista
+    public void abrirVistaActa(int idActa) {
+        // Asumiendo que FrmActaVer necesita el usuario y el ID
+        // (Asegúrate de tener un constructor en FrmActaVer que acepte String y int)
+        FrmActaVer panel = new FrmActaVer(this.parentFrame,usuarioLogueado, idActa);
+        
+        // Llama al método showPanel del padre (Main) para cambiar la vista
+         this.parentFrame.showPanel(panel);
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tb_Acta = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txt_Empleado = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         cb_Estado = new javax.swing.JComboBox<>();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tb_Acta = new javax.swing.JTable();
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel1.setText("Bandeja de Actas");
+
+        jLabel2.setText("Nombre de Empleado:");
+
+        jLabel3.setText("Estado: ");
 
         tb_Acta.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -130,35 +160,45 @@ public class FrmBandejaActa extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tb_Acta);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Bandeja de Actas");
-
-        jLabel2.setText("Nombre de Empleado:");
-
-        jLabel3.setText("Estado: ");
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1110, Short.MAX_VALUE)
+                .addGap(27, 27, 27))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txt_Empleado, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 647, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cb_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(292, 292, 292)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txt_Empleado, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(292, 292, 292)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,9 +211,9 @@ public class FrmBandejaActa extends javax.swing.JPanel {
                     .addComponent(txt_Empleado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(cb_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(235, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -183,6 +223,7 @@ public class FrmBandejaActa extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tb_Acta;
     private javax.swing.JTextField txt_Empleado;

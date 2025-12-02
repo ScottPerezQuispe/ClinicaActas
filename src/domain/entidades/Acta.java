@@ -12,35 +12,34 @@ import java.util.List;
  * @author Scott.perez
  */
 public class Acta {
-   private int IdActa;
-    private Date Fecha; 
+
+    private int IdActa;
+    private Date Fecha;
     private String TipoActa; // Referencia al tipo de acta (Entrega/Recojo)
-    
+
     // Mapeo de FKs a objetos de Dominio para mejor manejo
-    private int IdEmpleado; // Asumiendo que existe la clase Empleado
-    private int IdUsuarioSoporte; // Asumiendo que existe la clase Usuario
-    private int IdCoordinador; // Asumiendo que existe la clase Usuario
-    
+    private int IdEmpleado;
+    private int IdUsuarioSoporte;
+    private int IdCoordinador;
+
     private String FechaSoporte;
     private String FechaCoordinador;
     private String Comentario;
     private int IdEstado;
     private String EstadoNombre;
-    // 👉 Aquí está la lista de detalles del acta
+
     private List<DetalleActa> Detalles;
-    
+
     //Datos Adicionales
-     private String EmpleadoNombres;
+    private String EmpleadoNombres;
 
     private String EmpleadoArea;
     private String RegistradorUsuario;
     private String FechaRegistro;
-     private String AprobadorUsuario;
+    private String AprobadorUsuario;
 
-  
-     
-    
-    public Acta() {}
+    public Acta() {
+    }
 
     public Acta(Date Fecha, String TipoActa, int IdEmpleado, int IdUsuarioSoporte, String Comentario, List<DetalleActa> Detalles) {
         this.Fecha = Fecha;
@@ -52,7 +51,7 @@ public class Acta {
     }
 
     public Acta(String FechaRegistro, String TipoActa, String Comentario, String EmpleadoNombres, String EmpleadoArea,
-            String RegistradorUsuario, String FechaSoporte, String AprobadorUsuario, String FechaCoordinador,List<DetalleActa> Detalles) {
+            String RegistradorUsuario, String FechaSoporte, String AprobadorUsuario, String FechaCoordinador, List<DetalleActa> Detalles,int IdEstado) {
         this.FechaRegistro = FechaRegistro;
         this.TipoActa = TipoActa;
         this.Comentario = Comentario;
@@ -63,11 +62,8 @@ public class Acta {
         this.AprobadorUsuario = AprobadorUsuario;
         this.FechaCoordinador = FechaCoordinador;
         this.Detalles = Detalles;
+        this.IdEstado=IdEstado;
     }
-    
-    
-
-   
 
     public int getIdActa() {
         return IdActa;
@@ -157,7 +153,7 @@ public class Acta {
         this.Detalles = Detalles;
     }
 
-     public String getEmpleadoNombres() {
+    public String getEmpleadoNombres() {
         return EmpleadoNombres;
     }
 
@@ -188,8 +184,8 @@ public class Acta {
     public void setFechaRegistro(String FechaRegistro) {
         this.FechaRegistro = FechaRegistro;
     }
-    
-     public String getAprobadorUsuario() {
+
+    public String getAprobadorUsuario() {
         return AprobadorUsuario;
     }
 
@@ -198,13 +194,12 @@ public class Acta {
     }
 
     //Nombre de Estado
-    
-    public String getEstadoNombre() { 
-        return EstadoNombre; }
-    
+    public String getEstadoNombre() {
+        return EstadoNombre;
+    }
 
     public void setEstadoNombre(String EstadoNombre) {
-        this.EstadoNombre = EstadoNombre; }
-   
-    
+        this.EstadoNombre = EstadoNombre;
+    }
+
 }
