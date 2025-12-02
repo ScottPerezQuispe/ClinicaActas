@@ -128,7 +128,7 @@ public class FrmActaAprobacion extends javax.swing.JPanel {
     // Método para obtener la lista de equipos (Debes implementar tu EquipoPresenter/Service)
     private void cargarEquipos() {
         ListarEquipoUseCase listaUseCase = new ListarEquipoUseCase(new EquipoRepositoryImpl());
-        listaEquipos = listaUseCase.ListarCombo();
+        listaEquipos = listaUseCase.ListarCombo(1);
     }
 
     // En FrmActa_registro o un método auxiliar en el Presenter

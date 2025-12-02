@@ -28,20 +28,25 @@ import javax.swing.table.DefaultTableModel;
 
 public class FrmActa_registro extends javax.swing.JPanel {
 
+    public static Main parentFrame;
     private Usuario usuarioLogueado;
     private DateChooser chDate = new DateChooser();
     private DefaultTableModel model;
-    private List<Equipo> listaEquipos;
+    private List<Equipo> listaEquipos = new ArrayList<>();
+    ;
     private DefaultTableModel tableModel;
 
-    public FrmActa_registro(Usuario usuario) {
+    public FrmActa_registro(Main parentFrame, Usuario usuario) {
+        this.parentFrame = parentFrame;
         this.usuarioLogueado = usuario;
         initComponents();
         cargarEmpleadosEnComboBox();
         configurarTablaYListeners();
         setupListeners();
+
         MostrarCalendario();
         inicializarComponentes();
+        inicializarEditorTabla();
     }
 
     private void inicializarComponentes() {
@@ -78,13 +83,11 @@ public class FrmActa_registro extends javax.swing.JPanel {
         // 🎯 LÍNEA CRÍTICA: Asignación correcta del modelo a la tabla
         jTable1.setModel(tableModel);
 
-        // 2. Configuración inicial
-        cargarEquipos(); // Llama a tu presenter para obtener la lista de equipos
+        //  cargarEquipos(0);
         //
         // 3. Configurar el editor de celda para la Columna 0 ("Equipo")
-        EquipoCellEditor equipoEditor = new EquipoCellEditor(jTable1, listaEquipos);
-        jTable1.getColumnModel().getColumn(0).setCellEditor(equipoEditor);
-
+        // EquipoCellEditor equipoEditor = new EquipoCellEditor(jTable1, listaEquipos);
+        //jTable1.getColumnModel().getColumn(0).setCellEditor(equipoEditor);
         // 4. Configurar el Action Listener para los botones
         jButton1.addActionListener(e -> agregarFila());
         jButton2.addActionListener(e -> eliminarFila());
@@ -94,6 +97,19 @@ public class FrmActa_registro extends javax.swing.JPanel {
     // Asegúrate de que este método exista y devuelva el objeto
     private Equipo crearPlaceholderEquipo() {
         return new Equipo(0, "-- Seleccione Equipo --", "", "", 1);
+    }
+
+    private void inicializarEditorTabla() {
+        jRadioButtonEntrega.setSelected(true);
+        recargarEquiposPorTipo();
+        // 1. Inicialmente, configuramos el editor con una lista vacía o nula.
+        // Esto asegura que la tabla tenga un editor válido al inicio.
+        EquipoCellEditor equipoEditor = new EquipoCellEditor(jTable1, listaEquipos);
+        jTable1.getColumnModel().getColumn(0).setCellEditor(equipoEditor);
+
+        // 2. 🎯 Simular un cambio en el empleado para forzar la carga dinámica
+        // Esto llamará a recargarEquiposPorTipo(), que sí respeta la condición del radio button.
+        // mostrarAreaEmpleadoSeleccionado(); 
     }
 
     private void agregarFila() {
@@ -110,25 +126,46 @@ public class FrmActa_registro extends javax.swing.JPanel {
         System.out.println("nuevaFila  " + nuevaFila + " " + tableModel.getRowCount());
     }
 
-    private void eliminarFila() {
-        int filaSeleccionada = jTable1.getSelectedRow();
-
-        if (filaSeleccionada != -1) {
-            // Elimina la fila seleccionada
-            tableModel.removeRow(filaSeleccionada);
+private void eliminarFila() {
+    // 1. **Paso CLAVE:** Forzar el fin de cualquier edición en curso.
+    if (jTable1.isEditing()) {
+        // Detener la edición actual antes de modificar el modelo.
+        // Si el valor editado es válido, se guardará. Si no, se cancela.
+        if (jTable1.getCellEditor().stopCellEditing()) {
+            // Edición detenida exitosamente
         } else {
-            JOptionPane.showMessageDialog(this,
-                    "Seleccione una fila para eliminar.",
-                    "Atención",
-                    JOptionPane.WARNING_MESSAGE);
+            jTable1.getCellEditor().cancelCellEditing();
         }
-        System.out.println("filaSeleccionada  " + filaSeleccionada + " " + tableModel.getRowCount());
     }
+    
+    // 2. Proceso de eliminación de fila (Tu lógica original)
+    int filaSeleccionada = jTable1.getSelectedRow();
+
+    if (filaSeleccionada != -1) {
+        // Elimina la fila seleccionada
+        tableModel.removeRow(filaSeleccionada);
+        // Opcional: Si eliminas la última fila, asegúrate de que no haya selección residual.
+        if (tableModel.getRowCount() > 0 && filaSeleccionada < tableModel.getRowCount()) {
+             jTable1.setRowSelectionInterval(filaSeleccionada, filaSeleccionada);
+        }
+    } else {
+        JOptionPane.showMessageDialog(this,
+                "Seleccione una fila para eliminar.",
+                "Atención",
+                JOptionPane.WARNING_MESSAGE);
+    }
+    System.out.println("filaSeleccionada  " + filaSeleccionada + " " + tableModel.getRowCount());
+}
 
     // Método para obtener la lista de equipos (Debes implementar tu EquipoPresenter/Service)
-    private void cargarEquipos() {
+    private void cargarEquipos(int IdEmpleado) {
         ListarEquipoUseCase listaUseCase = new ListarEquipoUseCase(new EquipoRepositoryImpl());
-        listaEquipos = listaUseCase.ListarCombo();
+        listaEquipos = listaUseCase.ListarCombo(IdEmpleado);
+    }
+
+    private void cargarEquiposEmpleado(int IdEmpleado) {
+        ListarEquipoUseCase listaUseCase = new ListarEquipoUseCase(new EquipoRepositoryImpl());
+        listaEquipos = listaUseCase.ListarEquiposPorEmpleado(IdEmpleado);
     }
 
     // En FrmActa_registro o un método auxiliar en el Presenter
@@ -165,10 +202,59 @@ public class FrmActa_registro extends javax.swing.JPanel {
         // Para que muestre el nombre, la clase Empleado DEBE SOBREESCRIBIR el método toString()
     }
 
+    private void recargarEquiposPorTipo() {
+        Empleado empleadoSeleccionado = (Empleado) cboEmpleado.getSelectedItem();
+
+        if (empleadoSeleccionado == null || empleadoSeleccionado.getIdEmpleado() == 0) {
+            return;
+        }
+
+        if (jRadioButtonEntrega.isSelected()) {
+            cargarEquipos(empleadoSeleccionado.getIdEmpleado());
+        } else {
+            cargarEquiposEmpleado(empleadoSeleccionado.getIdEmpleado());
+        }
+
+        // ACTUALIZA EL EDITOR DE LA TABLA
+        EquipoCellEditor equipoEditor = new EquipoCellEditor(jTable1, listaEquipos);
+        jTable1.getColumnModel().getColumn(0).setCellEditor(equipoEditor);
+    }
+
+    private void limpiarTablaYEmpleadoAlCambiarTipo() {
+
+        // 1. Limpiar la tabla (eliminar todas las filas)
+        tableModel.setRowCount(0);
+
+        // 2. Limpiar la selección del Empleado
+        // La opción 0 es tu placeholder: "-- Seleccione un Empleado --"
+        cboEmpleado.setSelectedIndex(0);
+
+        // 3. Limpiar el campo de Área
+        txtArea.setText("");
+
+        // 4. Limpiar la lista de equipos disponible (opcional, ya se recargará en recargarEquiposPorTipo)
+        // Pero lo incluimos por seguridad si el editor pudiera acceder a ella antes de la recarga.
+        listaEquipos.clear();
+    }
+
     private void setupListeners() {
         // Detecta cuando el usuario cambia la selección
         cboEmpleado.addActionListener(e -> {
             mostrarAreaEmpleadoSeleccionado();
+        });
+
+        // 🎯 MODIFICACIÓN DE LOS LISTENERS DE RADIO BUTTONS
+        jRadioButtonEntrega.addActionListener(e -> {
+            limpiarTablaYEmpleadoAlCambiarTipo();
+            // Después de limpiar, recarga el editor con la nueva lista 
+            // (esto puede disparar una carga si ya hay un empleado seleccionado)
+            recargarEquiposPorTipo();
+        });
+
+        jRadioButtonRecojo.addActionListener(e -> {
+            limpiarTablaYEmpleadoAlCambiarTipo();
+            // Después de limpiar, recarga el editor con la nueva lista
+            recargarEquiposPorTipo();
         });
 
         // 🎯 Implementación del Listener para la TABLA
@@ -217,7 +303,9 @@ public class FrmActa_registro extends javax.swing.JPanel {
 
         // 2. Validar si es un empleado real (no el placeholder)
         if (empleadoSeleccionado != null && empleadoSeleccionado.getIdEmpleado() != 0) {
-
+            // --- 🎯 ACCIÓN CLAVE 1: Limpiar la tabla de equipos anterior ---
+            // Vaciamos todas las filas del modelo
+            tableModel.setRowCount(0);
             // Asumiendo que el campo para el Área en el JTextArea es jTextArea1.
             // Y que el Area tiene un método getNombre()
             String nombreArea = empleadoSeleccionado.getArea().getNombre();
@@ -225,10 +313,14 @@ public class FrmActa_registro extends javax.swing.JPanel {
             // 3. Establecer el texto en el JTextArea (o el campo de texto que uses para el área)
             txtArea.setText(nombreArea);
 
+            // 2. Configuración inicial
+            recargarEquiposPorTipo();
+
             // Opcional: Podrías usar un JTextField/JLabel para el Área en lugar de un JTextArea si solo es una línea.
         } else {
             // Si se selecciona el placeholder ("-- Seleccione..."), limpiamos el área de texto
             txtArea.setText("");
+            tableModel.setRowCount(0); // Limpiar tabla si es el placeholder.
         }
     }
 
@@ -316,7 +408,7 @@ public class FrmActa_registro extends javax.swing.JPanel {
         // 2. EXTRACCIÓN DE DATOS DE LA CABECERA (ACTA)
         try {
             // Tipo de Acta
-            String tipoActa = jRadioButtonEntrega.isSelected() ? "ENTREGA" : "RECOJO";
+            String tipoActa = jRadioButtonEntrega.isSelected() ? "ENTREGA" : "DEVOLUCIÓN";
 
             // Empleado Seleccionado
             Empleado empleado = (Empleado) cboEmpleado.getSelectedItem();
@@ -329,8 +421,6 @@ public class FrmActa_registro extends javax.swing.JPanel {
             // Comentario
             String comentario = txtComentario.getText().trim();
 
-          
-
             // 4. EXTRACCIÓN DE DETALLES (ACTADETALLE)
             List<DetalleActa> detalles = new ArrayList<>();
 
@@ -339,23 +429,20 @@ public class FrmActa_registro extends javax.swing.JPanel {
 
                 // Validar que no sea el placeholder (ID 0)
                 if (equipo.getIdEquipo() != 0) {
-                   
+
                     DetalleActa detalle = new DetalleActa();
-                            
+
                     detalle.setIdEquipo(equipo.getIdEquipo());
-                       
+
                     detalles.add(detalle);
-                    
-                   
-                  
+
                 }
             }
 
-              // --- 3. CREACIÓN DE LA ENTIDAD ACTA (Dominio - Simulación) ---
+            // --- 3. CREACIÓN DE LA ENTIDAD ACTA (Dominio - Simulación) ---
             Acta nuevaActa = new Acta(
                     fechaActa,
                     tipoActa,
-                    
                     empleado.getIdEmpleado(),
                     this.usuarioLogueado.getIdUsuario(),
                     comentario,
@@ -367,17 +454,19 @@ public class FrmActa_registro extends javax.swing.JPanel {
             RegistrarActaUseCase registrarUseCase = new RegistrarActaUseCase(new ActaRepositoryImpl());
             boolean exito = registrarUseCase.Registrar(nuevaActa);
 
-           if (exito) {
-                JOptionPane.showMessageDialog(this, 
-                    "Acta registrada exitosamente", 
-                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                
-            } else {
-               JOptionPane.showMessageDialog(this, 
-                    "Error al registrar el Acta. La transacción fue revertida.", 
-                    "Error de Registro", JOptionPane.ERROR_MESSAGE);
-            }
+            if (exito) {
+                FrmBandejaActa panel = new FrmBandejaActa(parentFrame, usuarioLogueado);
+                this.parentFrame.showPanel(panel);
+                JOptionPane.showMessageDialog(this,
+                        "Acta registrada exitosamente",
+                        "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Error al registrar el Acta. La transacción fue revertida.",
+                        "Error de Registro", JOptionPane.ERROR_MESSAGE);
+            }
+            /*
             // Simulación de éxito:
             JOptionPane.showMessageDialog(this,
                     "Acta simulada a registrar:\n"
@@ -386,7 +475,7 @@ public class FrmActa_registro extends javax.swing.JPanel {
                     + "Fecha: " + df.format(fechaActa) + "\n"
                     + "Equipos: " + detalles.size(),
                     "Simulación de Guardado Exitoso",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.INFORMATION_MESSAGE);*/
 
             // TODO: Agregar el método resetearFormulario() para limpiar los campos
         } catch (java.text.ParseException e) {
@@ -404,12 +493,11 @@ public class FrmActa_registro extends javax.swing.JPanel {
         }
     }
 
-  
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton3 = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtComentario = new javax.swing.JTextArea();
@@ -432,7 +520,7 @@ public class FrmActa_registro extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(1190, 613));
         setRequestFocusEnabled(false);
 
-        jButton3.setText("Cancelar");
+        btnCancelar.setText("Cancelar");
 
         btnGuardar.setText("Guardar");
 
@@ -477,7 +565,9 @@ public class FrmActa_registro extends javax.swing.JPanel {
 
         jRadioButtonEntrega.setText("Entrega");
 
-        jRadioButtonRecojo.setText("Recojo");
+        jRadioButtonRecojo.setText("Devolución");
+        jRadioButtonRecojo.setToolTipText("");
+        jRadioButtonRecojo.setActionCommand("DEVOLUCIÓN");
 
         jLabel5.setText("Fecha :");
 
@@ -491,6 +581,20 @@ public class FrmActa_registro extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(354, 354, 354)
+                                .addComponent(jLabel1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButton1)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jButton2))
+                                    .addComponent(jLabel6))))
+                        .addGap(0, 792, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -517,30 +621,14 @@ public class FrmActa_registro extends javax.swing.JPanel {
                                     .addComponent(txtArea, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(124, 124, 124))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(354, 354, 354)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jButton1)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton2))
-                                    .addComponent(jLabel6))))
-                        .addGap(0, 792, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2))))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(btnGuardar)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3)
+                .addComponent(btnCancelar)
                 .addGap(13, 13, 13))
         );
         layout.setVerticalGroup(
@@ -574,18 +662,18 @@ public class FrmActa_registro extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
-                    .addComponent(jButton3))
+                    .addComponent(btnCancelar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JComboBox<Empleado> cboEmpleado;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

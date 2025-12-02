@@ -22,7 +22,10 @@ public class ListarEquipoUseCase {
     public List<Equipo> Listar() {
         return Repository.Listar();
     }
-    public List<Equipo> ListarCombo(){
-     return Repository.ListarCombo();
+    public List<Equipo> ListarCombo(int IdEmpleado){
+     return Repository.ListarCombo( IdEmpleado);
+    }
+    public List<Equipo> ListarEquiposPorEmpleado(int IdEmpleado){
+     return Repository.ListarEquiposPorEmpleado(IdEmpleado);
     }
 }

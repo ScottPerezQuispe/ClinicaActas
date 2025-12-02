@@ -9,6 +9,7 @@ import presentation.view.FrmActaVer;
 import presentation.view.FrmActa_registro;
 import presentation.view.FrmBandejaActa;
 import presentation.view.FrmProducto;
+import presentation.view.FrmReporteAsignacion;
 import presentation.view.FrmUsuario;
 import presentation.view.Login;
 import presentation.view.Main;
@@ -67,8 +68,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             {"~Acta~"},
             {"Bandeja"},
             {"Registrar"},
-            //{"~OTHER~"},
-            // {"Charts", "Apex", "Flot", "Sparkline"},
+            {"~Reportes~"},
+             {"Asignación"},
             //{"Icons", "Feather Icons", "Flag Icons", "Mdi Icons"},
             //{"Special Pages", "Blank page", "Faq", "Invoice", "Profile", "Pricing", "Timeline"},
             {"Logout"}};
@@ -79,7 +80,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             "pc.svg",
             "bandejaentrada.svg",
             "process.svg",
-            // "forms.svg",
+             "forms.svg",
             // "chart.svg",
             // "icon.svg",
             // "page.svg",
@@ -104,15 +105,24 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             FrmProducto panel = new FrmProducto();
                             mainFrame.showPanel(panel);
                         } else if (index == 2) {
-                            FrmBandejaActa panel = new FrmBandejaActa();
+                            FrmBandejaActa panel = new FrmBandejaActa(mainFrame,usuarioParaFormulario);
 
                             mainFrame.showPanel(panel);
                         } else if (index == 3) {
 
-                            FrmActa_registro panel = new FrmActa_registro(usuarioParaFormulario); 
+                            
+                            FrmActa_registro panel = new FrmActa_registro(mainFrame, usuarioParaFormulario); 
                             //FrmActaVer panel = new FrmActaVer(usuarioParaFormulario, 1);
                             mainFrame.showPanel(panel);
-                        } else if (index == 4) {
+                        }else if (index == 4) {
+
+                            FrmReporteAsignacion panel = new FrmReporteAsignacion(usuarioParaFormulario); 
+                            //FrmActaVer panel = new FrmActaVer(usuarioParaFormulario, 1);
+                            mainFrame.showPanel(panel);
+                        }
+                        
+                        
+                        else if (index == 5) {
 
                             Main mainInstance = new Main();
 

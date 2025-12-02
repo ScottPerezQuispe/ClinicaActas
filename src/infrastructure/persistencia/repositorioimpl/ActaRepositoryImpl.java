@@ -24,52 +24,55 @@ public class ActaRepositoryImpl implements IActaRepository {
         CallableStatement csActa = null;
         CallableStatement csDetalle = null;
         boolean exito = false;
-        int idActaGenerado = 0; // Usamos un entero para retornar el ID
+        int idActaGenerado = 0; 
 
         // Stored Procedures (Asegúrate de que existan en tu DB con esta firma)
         final String SP_REGISTRAR_ACTA = "{CALL sp_registrar_acta(?,?,?,?,?)}";
-        final String SP_REGISTRAR_DETALLE_ACTA = "{CALL sp_registrar_detalle_acta(?,?)}";
+        final String SP_REGISTRAR_DETALLE_ACTA = "{CALL sp_registrar_detalle_acta(?,?,?,?,?,?)}";
 
         try {
-            // Obtener Conexión (Asumo que esta clase es el antiguo MySQLConnection)
+            
             con = MySQLConnection.obtenerConexion();
-            con.setAutoCommit(false); // 🔒 Inicia transacción
+            con.setAutoCommit(false);
 
-            // 1️⃣ Registrar el encabezado del acta
+           
             csActa = con.prepareCall(SP_REGISTRAR_ACTA);
             
-            // Conversión de java.util.Date a java.sql.Date
+            
             csActa.setDate(1, new java.sql.Date(acta.getFecha().getTime()));
             csActa.setString(2, acta.getTipoActa());
             csActa.setInt(3, acta.getIdEmpleado());
             csActa.setInt(4, acta.getIdUsuarioSoporte());
             csActa.setString(5, acta.getComentario());
             
-            // Ejecutar el SP y obtener el ResultSet que contiene el ID generado
+            
             try (ResultSet rs = csActa.executeQuery()) {
                 if (rs.next()) {
                     idActaGenerado = rs.getInt("IdActa");
                 } else {
-                    // Si el SP no devuelve el ID, es un error crítico
+                    
                     throw new SQLException("El SP 'sp_registrar_acta' no retornó el ID del Acta.");
                 }
             }
 
-            // 2️⃣ Registrar cada detalle usando Batch
+            
             if (idActaGenerado > 0) {
                 csDetalle = con.prepareCall(SP_REGISTRAR_DETALLE_ACTA);
                 for (DetalleActa d : acta.getDetalles()) {
-                    csDetalle.setInt(1, idActaGenerado); // Usar el ID recién generado
+                    csDetalle.setInt(1, idActaGenerado); 
                     csDetalle.setInt(2, d.getIdEquipo());
-                
-                    csDetalle.addBatch(); // Añadir la instrucción al lote
+                    csDetalle.setInt(3, acta.getIdEmpleado());
+                    csDetalle.setInt(4, acta.getIdUsuarioSoporte());
+                    csDetalle.setString(5, acta.getTipoActa());
+                    csDetalle.setString(6, acta.getComentario());
+                    csDetalle.addBatch(); 
                 }
-                csDetalle.executeBatch(); // Ejecutar todas las inserciones en lote
+                csDetalle.executeBatch(); 
             } else {
                 throw new SQLException("Fallo al obtener el ID del Acta. Detalles no registrados.");
             }
 
-            // 3️⃣ Finalizar la transacción
+          
             con.commit();
             System.out.println("✅ Acta registrada correctamente con sus detalles. ID generado: " + idActaGenerado);
             exito =true;
@@ -125,12 +128,13 @@ public class ActaRepositoryImpl implements IActaRepository {
                             rs.getString("TipoActa"),
                             rs.getString("Comentario"),
                             rs.getString("EmpleadoNombres"),
-                            rs.getString("Acta"),
+                            rs.getString("EmpleadoArea"),
                             rs.getString("RegistradorUsuario"),
                             rs.getString("FechaSoporte"),
                             rs.getString("AprobadorUsuario"),
                             rs.getString("FechaCoordinador"),
-                            new ArrayList<>() // Inicializar la lista de detalles vacía
+                            new ArrayList<>() ,// Inicializar la lista de detalles vacía
+                           rs.getInt("IdEstado")
                         );
                     }
                 }
@@ -179,11 +183,9 @@ public class ActaRepositoryImpl implements IActaRepository {
     try (Connection con = MySQLConnection.obtenerConexion();
          CallableStatement cs = con.prepareCall(SP_APROBAR_ACTA)) {
         
-        // Parámetros: ID del Acta y ID del Coordinador
         cs.setInt(1, idActa);
         cs.setInt(2, idCoordinador);
 
-        // Se espera que el SP retorne el número de filas afectadas
         int filasAfectadas = cs.executeUpdate();
         
         return filasAfectadas > 0;
@@ -197,16 +199,16 @@ public class ActaRepositoryImpl implements IActaRepository {
 
     @Override
     public boolean rechazar(int idActa, int idCoordinador) {
-        // Asumiendo que usas un SP llamado sp_rechazar_acta
+    
     final String SP_RECHAZAR_ACTA = "{CALL sp_rechazar_acta(?, ?)}"; 
     
     try (Connection con = MySQLConnection.obtenerConexion();
          CallableStatement cs = con.prepareCall(SP_RECHAZAR_ACTA)) {
         
-        // Parámetros: ID del Acta, ID del Coordinador, y el Comentario con el Motivo
+       
         cs.setInt(1, idActa);
         cs.setInt(2, idCoordinador);
-        //cs.setString(3, comentario); // Actualiza el comentario en la tabla Acta
+   
 
         int filasAfectadas = cs.executeUpdate();
         

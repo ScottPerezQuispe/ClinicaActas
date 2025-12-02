@@ -108,14 +108,19 @@ public class EquipoRepositoryImpl implements IEquipoRepository {
     }
 
     @Override
-    public List<Equipo> ListarCombo() {
+    public List<Equipo> ListarCombo(int IdEmpleado) {
         List<Equipo> lista = new ArrayList<>();
-        String sql = "{CALL sp_ListarEquipos()}";
+    String sql = "{CALL sp_ListarComboEquipos(?)}";
 
-        try (Connection con = MySQLConnection.obtenerConexion();
-             CallableStatement cs = con.prepareCall(sql);
-             ResultSet rs = cs.executeQuery()) {
+    // 1. Declarar solo recursos AutoCloseable en try-with-resources
+    try (Connection con = MySQLConnection.obtenerConexion();
+         CallableStatement cs = con.prepareCall(sql)) {
 
+        // 2. Asignar el parámetro e.g., cs.setInt(...)
+        cs.setInt(1, IdEmpleado);
+
+        // 3. Ejecutar la consulta y obtener el ResultSet
+        try (ResultSet rs = cs.executeQuery()) { 
             while (rs.next()) {
                 Equipo eq = new Equipo();
                 eq.setIdEquipo(rs.getInt("IdEquipo"));
@@ -123,14 +128,47 @@ public class EquipoRepositoryImpl implements IEquipoRepository {
                 eq.setMarca(rs.getString("Marca"));
                 eq.setModelo(rs.getString("Modelo"));
                 eq.setCantidad(rs.getInt("Cantidad"));
-               
+                
                 lista.add(eq);
             }
+        } // El ResultSet se cierra automáticamente aquí
 
-        } catch (Exception e) {
-            System.err.println("❌ Error al listar equipos: " + e.getMessage());
-        }
-        return lista;
+    } catch (Exception e) {
+        System.err.println("❌ Error al listar equipos: " + e.getMessage());
+    }
+    return lista;
+    }
+
+    @Override
+    public List<Equipo> ListarEquiposPorEmpleado(int IdEmpleado) {
+          List<Equipo> lista = new ArrayList<>();
+    String sql = "{CALL sp_ListarEquiposPorEmpleado(?)}";
+
+    // 1. Declarar solo recursos AutoCloseable en try-with-resources
+    try (Connection con = MySQLConnection.obtenerConexion();
+         CallableStatement cs = con.prepareCall(sql)) {
+
+        // 2. Asignar el parámetro e.g., cs.setInt(...)
+        cs.setInt(1, IdEmpleado);
+
+        // 3. Ejecutar la consulta y obtener el ResultSet
+        try (ResultSet rs = cs.executeQuery()) { 
+            while (rs.next()) {
+                Equipo eq = new Equipo();
+                eq.setIdEquipo(rs.getInt("IdEquipo"));
+                eq.setNombreEquipo(rs.getString("Nombre"));
+                eq.setMarca(rs.getString("Marca"));
+                eq.setModelo(rs.getString("Modelo"));
+                //eq.setCantidad(rs.getInt("Cantidad"));
+                
+                lista.add(eq);
+            }
+        } // El ResultSet se cierra automáticamente aquí
+
+    } catch (Exception e) {
+        System.err.println("❌ Error al listar equipos: " + e.getMessage());
+    }
+    return lista;
     }
     
 }

@@ -16,6 +16,7 @@ public interface IEquipoRepository {
       boolean Insertar(Equipo equipo);
       boolean Actualizar(Equipo equipo);
       boolean Eliminar(int idEquipo);
-      List<Equipo> ListarCombo();
+      List<Equipo> ListarCombo(int IdEmpleado);
+      List<Equipo> ListarEquiposPorEmpleado(int IdEmpleado);
       
 }
