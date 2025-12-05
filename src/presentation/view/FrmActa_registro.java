@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import static presentation.view.FrmActaVer.parentFrame;
 
 public class FrmActa_registro extends javax.swing.JPanel {
 
@@ -92,8 +93,12 @@ public class FrmActa_registro extends javax.swing.JPanel {
         jButton1.addActionListener(e -> agregarFila());
         jButton2.addActionListener(e -> eliminarFila());
         btnGuardar.addActionListener(e -> guardarActa());
+        btnCancelar.addActionListener(e -> cancelarActa());
     }
-
+    private void cancelarActa(){
+        FrmBandejaActa panel = new FrmBandejaActa( parentFrame, usuarioLogueado);
+        this.parentFrame.showPanel(panel);    
+    }
     // Asegúrate de que este método exista y devuelva el objeto
     private Equipo crearPlaceholderEquipo() {
         return new Equipo(0, "-- Seleccione Equipo --", "", "", 1);
@@ -185,7 +190,7 @@ private void eliminarFila() {
 
     private void cargarEmpleadosEnComboBox() {
         ListarEmpleadoUseCase EmpleadoUseCase = new ListarEmpleadoUseCase(new EmpleadoRepositoryImpl());
-        List<Empleado> empleados = EmpleadoUseCase.Listar();
+        List<Empleado> empleados = EmpleadoUseCase.ListarCombo();
 
         // El modelo ahora es de tipo Empleado
         //DefaultComboBoxModel<Empleado> model = new DefaultComboBoxModel<>();
@@ -408,7 +413,7 @@ private void eliminarFila() {
         // 2. EXTRACCIÓN DE DATOS DE LA CABECERA (ACTA)
         try {
             // Tipo de Acta
-            String tipoActa = jRadioButtonEntrega.isSelected() ? "ENTREGA" : "DEVOLUCIÓN";
+            String tipoActa = jRadioButtonEntrega.isSelected() ? "Entrega" : "Recojo";
 
             // Empleado Seleccionado
             Empleado empleado = (Empleado) cboEmpleado.getSelectedItem();
@@ -565,7 +570,7 @@ private void eliminarFila() {
 
         jRadioButtonEntrega.setText("Entrega");
 
-        jRadioButtonRecojo.setText("Devolución");
+        jRadioButtonRecojo.setText("Recojo");
         jRadioButtonRecojo.setToolTipText("");
         jRadioButtonRecojo.setActionCommand("DEVOLUCIÓN");
 

@@ -82,13 +82,19 @@ public class EquipoRepositoryImpl implements IEquipoRepository {
     */
     
     @Override
-    public List<Equipo> Listar() {
+    public List<Equipo> Listar(String Nombres) {
         List<Equipo> lista = new ArrayList<>();
-        String sql = "{CALL sp_ListarEquipos()}";
+        String sql = "{CALL sp_ListarEquipos(?)}";
 
-        try (Connection con = MySQLConnection.obtenerConexion();
-             CallableStatement cs = con.prepareCall(sql);
-             ResultSet rs = cs.executeQuery()) {
+            // 1. Declarar solo recursos AutoCloseable en try-with-resources
+    try (Connection con = MySQLConnection.obtenerConexion();
+         CallableStatement cs = con.prepareCall(sql)) {
+
+        // 2. Asignar el parámetro e.g., cs.setInt(...)
+        cs.setString(1, Nombres);
+
+        // 3. Ejecutar la consulta y obtener el ResultSet
+        try (ResultSet rs = cs.executeQuery()) { 
 
             while (rs.next()) {
                 Equipo eq = new Equipo();
@@ -97,14 +103,16 @@ public class EquipoRepositoryImpl implements IEquipoRepository {
                 eq.setMarca(rs.getString("Marca"));
                 eq.setModelo(rs.getString("Modelo"));
                 eq.setCantidad(rs.getInt("Cantidad"));
+                 eq.setDisponible(rs.getInt("Disponible"));
                
                 lista.add(eq);
-            }
+          }
+        } // El ResultSet se cierra automáticamente aquí
 
-        } catch (Exception e) {
-            System.err.println("❌ Error al listar equipos: " + e.getMessage());
-        }
-        return lista;
+    } catch (Exception e) {
+        System.err.println("❌ Error al listar equipos: " + e.getMessage());
+    }
+    return lista;
     }
 
     @Override

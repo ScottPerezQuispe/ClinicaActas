@@ -7,6 +7,7 @@ package infrastructure.persistencia.repositorioimpl;
 import domain.entidades.Acta;
 import domain.entidades.DetalleActa;
 import domain.entidades.Equipo;
+import domain.entidades.ReporteTrazabilidad;
 import domain.repositorio.IActaRepository;
 import infrastructure.persistencia.conexion.MySQLConnection;
 import java.sql.*;
@@ -222,16 +223,21 @@ public class ActaRepositoryImpl implements IActaRepository {
     }
 
     @Override
-    public List<Acta> Listar() {
+    public List<Acta> Listar(String Nombres) {
         List<Acta> lista = new ArrayList<>();
-        String sql = "{CALL sp_ListarActas()}";  // 🔹 CORREGIDO
+        String sql = "{CALL sp_ListarActas(?)}";  // 🔹 CORREGIDO
+       // 1. Declarar solo recursos AutoCloseable en try-with-resources
+    try (Connection con = MySQLConnection.obtenerConexion();
+         CallableStatement cs = con.prepareCall(sql)) {
 
-        try (Connection con = MySQLConnection.obtenerConexion();
-             CallableStatement cs = con.prepareCall(sql);
-             ResultSet rs = cs.executeQuery()) {
+        // 2. Asignar el parámetro e.g., cs.setInt(...)
+        cs.setString(1, Nombres);
+
+        // 3. Ejecutar la consulta y obtener el ResultSet
+        try (ResultSet rs = cs.executeQuery()) { 
 
             while (rs.next()) {
-            Acta a = new Acta();
+                Acta a = new Acta();
             a.setIdActa(rs.getInt("IdActa"));
             a.setFecha(rs.getDate("Fecha"));
             a.setTipoActa(rs.getString("TipoActa"));
@@ -245,12 +251,53 @@ public class ActaRepositoryImpl implements IActaRepository {
             a.setEstadoNombre(rs.getString("Estado"));
 
                 lista.add(a);
-            }
+          }
+        } // El ResultSet se cierra automáticamente aquí
 
-        } catch (Exception e) {
-            System.err.println("❌ Error al listar áreas: " + e.getMessage());
+    } catch (Exception e) {
+        System.err.println("❌ Error al listar equipos: " + e.getMessage());
+    }
+    return lista;
+    }
+
+    @Override
+    public List<ReporteTrazabilidad> listarTrazabilidad(int idEquipo) {
+       
+        List<ReporteTrazabilidad> lista = new ArrayList<>();
+
+    String sql = "{CALL sp_reporte_trazabilidad_equipo(?)}";
+
+    try (Connection conn = MySQLConnection.obtenerConexion();
+         CallableStatement stmt = conn.prepareCall(sql)) {
+
+        stmt.setInt(1, idEquipo);
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                ReporteTrazabilidad r = new ReporteTrazabilidad();
+               // r.setIdHistorial(rs.getInt("IdHistorial"));
+                r.setIdEquipo(rs.getInt("IdEquipo"));
+                r.setNombreEquipo(rs.getString("NombreEquipo"));
+                r.setMarca(rs.getString("Marca"));
+                r.setModelo(rs.getString("Modelo"));
+                r.setIdEmpleado(rs.getInt("IdEmpleado"));
+                r.setEmpleado(rs.getString("Empleado"));
+                r.setArea(rs.getString("Area"));
+                r.setIdActa(rs.getInt("IdActa"));
+                r.setTipoActa(rs.getString("TipoActa"));
+                r.setFecha(rs.getDate("Fecha"));
+                r.setTipoMovimiento(rs.getString("TipoMovimiento"));
+               // r.setFechaMovimiento(rs.getTimestamp("FechaMovimiento"));
+               // r.setObservacion(rs.getString("Observacion"));
+
+                lista.add(r);
+            }
         }
-        return lista;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return lista;
     }
     
 }

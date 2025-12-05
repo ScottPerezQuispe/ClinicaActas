@@ -16,7 +16,7 @@ public class Equipo {
     private String Marca; 
     private String Modelo;
     private int Cantidad;
- 
+    private int Disponible;
    
     
     // Constructors
@@ -72,6 +72,22 @@ public class Equipo {
 
     public void setCantidad(int Cantidad) {
         this.Cantidad = Cantidad;
+    }
+
+    public String getNombre() {
+        return Nombre;
+    }
+
+    public void setNombre(String Nombre) {
+        this.Nombre = Nombre;
+    }
+
+    public int getDisponible() {
+        return Disponible;
+    }
+
+    public void setDisponible(int Disponible) {
+        this.Disponible = Disponible;
     }
 
   @Override

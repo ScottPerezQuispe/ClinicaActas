@@ -12,7 +12,7 @@ import java.util.List;
  * @author Scott.perez
  */
 public interface IEquipoRepository {
-      List<Equipo> Listar();
+      List<Equipo> Listar(String Nombres);
       boolean Insertar(Equipo equipo);
       boolean Actualizar(Equipo equipo);
       boolean Eliminar(int idEquipo);

@@ -57,7 +57,7 @@
                                           <Group type="102" alignment="1" attributes="0">
                                               <Component id="lblRegistradoPor" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="32767" attributes="0"/>
-                                              <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                                              <Component id="LabelAprobado" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <Group type="102" alignment="1" attributes="0">
                                               <Group type="103" groupAlignment="0" attributes="0">
@@ -76,7 +76,7 @@
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="lblFechaRegistro" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace pref="574" max="32767" attributes="0"/>
-                                      <Component id="jLabel10" min="-2" pref="113" max="-2" attributes="0"/>
+                                      <Component id="LabelFechaAprobado" min="-2" pref="113" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -131,14 +131,14 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblRegistradoPor" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="LabelAprobado" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblAprobadoPor" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblFechaRegistro" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="LabelFechaAprobado" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblFechaAprobado" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
@@ -309,12 +309,12 @@
         <Property name="text" type="java.lang.String" value="fecharegistro"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel9">
+    <Component class="javax.swing.JLabel" name="LabelAprobado">
       <Properties>
         <Property name="text" type="java.lang.String" value="Aprobado por:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel10">
+    <Component class="javax.swing.JLabel" name="LabelFechaAprobado">
       <Properties>
         <Property name="text" type="java.lang.String" value="Fecha Aprobado:"/>
       </Properties>

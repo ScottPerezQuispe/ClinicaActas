@@ -20,23 +20,34 @@ public class FrmProducto extends javax.swing.JPanel{
         
        
         cargarTabla(); // carga la tabla automáticamente al abrir
+        setupListeners();
     }
     
-    
+    private void setupListeners() {
+        txt_Buscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    cargarTabla();
+                }
+            }
+        });
+    }
  
     public void cargarTabla() {
          ListarEquipoUseCase equipoRepository = new ListarEquipoUseCase(new EquipoRepositoryImpl() );
         DefaultTableModel modelo = (DefaultTableModel) tb_Producto.getModel();
         modelo.setRowCount(0); // limpia la tabla
-
-        List<Equipo> lista = equipoRepository.Listar(); // método que devuelve todos los equipos
+        String filtro = txt_Buscar.getText().trim();
+        List<Equipo> lista = equipoRepository.Listar(filtro); // método que devuelve todos los equipos
         for (Equipo eq : lista) {
             modelo.addRow(new Object[]{
                 eq.getIdEquipo(),
                 eq.getNombreEquipo(),
                 eq.getMarca(),
                 eq.getModelo(),
-                eq.getCantidad()
+                eq.getCantidad(),
+                eq.getDisponible()
             });
         }
     }
@@ -67,17 +78,17 @@ public class FrmProducto extends javax.swing.JPanel{
 
         tb_Producto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Código", "Nombre", "Marca", "Modelo", "Cantidad"
+                "Código", "Nombre", "Marca", "Modelo", "Cantidad", "Disponible"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {

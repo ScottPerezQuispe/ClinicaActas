@@ -245,7 +245,7 @@
     </Component>
     <Component class="javax.swing.JRadioButton" name="jRadioButtonRecojo">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Devoluci&#xf3;n"/>
+        <Property name="text" type="java.lang.String" value="Recojo"/>
         <Property name="toolTipText" type="java.lang.String" value=""/>
         <Property name="actionCommand" type="java.lang.String" value="DEVOLUCI&#xd3;N"/>
       </Properties>

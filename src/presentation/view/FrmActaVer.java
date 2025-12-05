@@ -42,7 +42,7 @@ public class FrmActaVer extends javax.swing.JPanel {
 
         EditarActaUseCase consultarUseCase = new EditarActaUseCase(new ActaRepositoryImpl());
         actaOriginal = consultarUseCase.buscarPorId(idActa); 
-
+        actaOriginal.setIdActa(idActa);
         lblTipo.setText(actaOriginal.getTipoActa());
         lblEmpleado.setText(actaOriginal.getEmpleadoNombres());
         lblRegistradoPor.setText(actaOriginal.getRegistradorUsuario());
@@ -54,12 +54,21 @@ public class FrmActaVer extends javax.swing.JPanel {
         txtComentario.setText(actaOriginal.getComentario());
 
         llenarTablaEquipos(actaOriginal.getDetalles());
-        
+         btnDescargar.setVisible(false);
         if (actaOriginal.getIdEstado()==2){
           
             btnRechazar.setVisible(false);
             btnAprobar.setVisible(false);
         }
+         if (actaOriginal.getIdEstado()==2){
+            btnDescargar.setVisible(true);
+        }
+        
+        if (actaOriginal.getTipoActa().equals("Recojo")){
+            LabelAprobado.setVisible(false);
+            LabelFechaAprobado.setVisible(false);
+        }
+        
     }
 
     private void llenarTablaEquipos(List<DetalleActa> detalles) {
@@ -193,8 +202,8 @@ public class FrmActaVer extends javax.swing.JPanel {
         lblRegistradoPor = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         lblFechaRegistro = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
+        LabelAprobado = new javax.swing.JLabel();
+        LabelFechaAprobado = new javax.swing.JLabel();
         lblAprobadoPor = new javax.swing.JLabel();
         lblFechaAprobado = new javax.swing.JLabel();
         btnRechazar = new javax.swing.JButton();
@@ -267,9 +276,9 @@ public class FrmActaVer extends javax.swing.JPanel {
 
         lblFechaRegistro.setText("fecharegistro");
 
-        jLabel9.setText("Aprobado por:");
+        LabelAprobado.setText("Aprobado por:");
 
-        jLabel10.setText("Fecha Aprobado:");
+        LabelFechaAprobado.setText("Fecha Aprobado:");
 
         lblAprobadoPor.setText("Aprobado");
         lblAprobadoPor.setToolTipText("");
@@ -314,7 +323,7 @@ public class FrmActaVer extends javax.swing.JPanel {
                                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                                 .addComponent(lblRegistradoPor)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jLabel9))
+                                                .addComponent(LabelAprobado))
                                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                     .addComponent(lblTipo)
@@ -327,7 +336,7 @@ public class FrmActaVer extends javax.swing.JPanel {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(lblFechaRegistro)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 574, Short.MAX_VALUE)
-                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(LabelFechaAprobado, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -369,13 +378,13 @@ public class FrmActaVer extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(lblRegistradoPor)
-                    .addComponent(jLabel9)
+                    .addComponent(LabelAprobado)
                     .addComponent(lblAprobadoPor))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(lblFechaRegistro)
-                    .addComponent(jLabel10)
+                    .addComponent(LabelFechaAprobado)
                     .addComponent(lblFechaAprobado))
                 .addGap(3, 3, 3)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -395,12 +404,13 @@ public class FrmActaVer extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel LabelAprobado;
+    private javax.swing.JLabel LabelFechaAprobado;
     private javax.swing.JButton btnAprobar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnDescargar;
     private javax.swing.JButton btnRechazar;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -408,7 +418,6 @@ public class FrmActaVer extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;

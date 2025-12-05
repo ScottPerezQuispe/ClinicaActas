@@ -5,6 +5,7 @@
 package presentation.drawer;
 
 import domain.entidades.Usuario;
+import javax.swing.JOptionPane;
 import presentation.view.FrmActaVer;
 import presentation.view.FrmActa_registro;
 import presentation.view.FrmBandejaActa;
@@ -69,7 +70,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             {"Bandeja"},
             {"Registrar"},
             {"~Reportes~"},
-             {"Asignación"},
+             {"Trazabilidad"},
             //{"Icons", "Feather Icons", "Flag Icons", "Mdi Icons"},
             //{"Special Pages", "Blank page", "Faq", "Invoice", "Profile", "Pricing", "Timeline"},
             {"Logout"}};
@@ -98,12 +99,28 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         Usuario usuarioParaFormulario = MyDrawerBuilder.this.usuarioLogueado;
 
                         if (index == 0) {
-
-                            FrmUsuario panel = new FrmUsuario();
+                        if (usuarioParaFormulario.getIdRol()==2){
+                              JOptionPane.showMessageDialog(mainFrame, // Es mejor usar mainFrame como parent
+                            "No cuenta con permiso para este módulo.", // Mensaje claro
+                            "Acceso Denegado", // Título de la ventana
+                            JOptionPane.WARNING_MESSAGE);
+                            }else {
+                           FrmUsuario panel = new FrmUsuario();
                             mainFrame.showPanel(panel);
+                        }
+                         
                         } else if (index == 1) {
-                            FrmProducto panel = new FrmProducto();
+                            
+                                if (usuarioParaFormulario.getIdRol()==2){
+                              JOptionPane.showMessageDialog(mainFrame, // Es mejor usar mainFrame como parent
+                            "No cuenta con permiso para este módulo.", // Mensaje claro
+                            "Acceso Denegado", // Título de la ventana
+                            JOptionPane.WARNING_MESSAGE);
+                            }else {
+                           FrmProducto panel = new FrmProducto();
                             mainFrame.showPanel(panel);
+                        }
+                           
                         } else if (index == 2) {
                             FrmBandejaActa panel = new FrmBandejaActa(mainFrame,usuarioParaFormulario);
 
@@ -115,10 +132,21 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             //FrmActaVer panel = new FrmActaVer(usuarioParaFormulario, 1);
                             mainFrame.showPanel(panel);
                         }else if (index == 4) {
-
-                            FrmReporteAsignacion panel = new FrmReporteAsignacion(usuarioParaFormulario); 
+                                
+                            if (usuarioParaFormulario.getIdRol()==2){
+                            
+                            JOptionPane.showMessageDialog(mainFrame, // Es mejor usar mainFrame como parent
+                            "No cuenta con permiso para este módulo.", // Mensaje claro
+                            "Acceso Denegado", // Título de la ventana
+                            JOptionPane.WARNING_MESSAGE);
+                            }else {
+                             FrmReporteAsignacion panel = new FrmReporteAsignacion(usuarioParaFormulario); 
                             //FrmActaVer panel = new FrmActaVer(usuarioParaFormulario, 1);
                             mainFrame.showPanel(panel);
+                            }
+                           
+                            
+                      
                         }
                         
                         

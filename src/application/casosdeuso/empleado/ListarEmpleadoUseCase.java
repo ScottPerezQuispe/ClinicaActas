@@ -11,7 +11,10 @@ public class ListarEmpleadoUseCase {
         this.Repository = repository;
     }
 
-    public List<Empleado> Listar() {
-        return Repository.Listar();
+    public List<Empleado> Listar(String Nombres) {
+        return Repository.Listar(Nombres);
+    }
+    public List<Empleado> ListarCombo() {
+        return Repository.ListarCombo();
     }
 }
