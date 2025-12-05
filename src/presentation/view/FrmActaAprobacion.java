@@ -148,7 +148,7 @@ public class FrmActaAprobacion extends javax.swing.JPanel {
 
     private void cargarEmpleadosEnComboBox() {
         ListarEmpleadoUseCase EmpleadoUseCase = new ListarEmpleadoUseCase(new EmpleadoRepositoryImpl());
-        List<Empleado> empleados = EmpleadoUseCase.Listar();
+        List<Empleado> empleados = EmpleadoUseCase.ListarCombo();
 
         // El modelo ahora es de tipo Empleado
         //DefaultComboBoxModel<Empleado> model = new DefaultComboBoxModel<>();

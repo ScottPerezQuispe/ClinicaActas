@@ -109,7 +109,7 @@ public class FrmMantenimientoProducto extends javax.swing.JPanel {
                 // El modal permanece abierto.
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "⚠️ Ocurrió un error: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "️ Ocurrió un error: " + e.getMessage());
         }
     }
    public void guardarEquipo() {

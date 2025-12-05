@@ -1,6 +1,7 @@
 package infrastructure.persistencia.repositorioimpl;
 
 import domain.entidades.Area;
+import domain.entidades.AsignacionReporte;
 import domain.entidades.Empleado;
 import domain.repositorio.IEmpleadoRepository;
 import infrastructure.persistencia.conexion.MySQLConnection;
@@ -71,14 +72,56 @@ public class EmpleadoRepositoryImpl implements IEmpleadoRepository{
     }
 
     @Override
-    public List<Empleado> Listar() {
+    public List<Empleado> Listar(String Nombres) {
         List<Empleado> lista = new ArrayList<>();
-        String sql = "{CALL sp_ListarEmpleados()}";
+        String sql = "{CALL sp_ListarEmpleados(?)}";
+
+        
+        // 1. Declarar solo recursos AutoCloseable en try-with-resources
+    try (Connection con = MySQLConnection.obtenerConexion();
+         CallableStatement cs = con.prepareCall(sql)) {
+
+        // 2. Asignar el parámetro e.g., cs.setInt(...)
+        cs.setString(1, Nombres);
+
+        // 3. Ejecutar la consulta y obtener el ResultSet
+        try (ResultSet rs = cs.executeQuery()) { 
+            while (rs.next()) {
+                // 1. Crear la entidad dependiente: Area
+                Area area = new Area();
+                // Asumiendo que 'Area' tiene un constructor o setters para idArea y nombre
+                area.setIdArea(rs.getInt("idArea")); 
+                area.setNombre(rs.getString("nombreArea"));
+
+                // 2. Crear la entidad principal: Empleado
+                Empleado emp = new Empleado();
+                emp.setIdEmpleado(rs.getInt("idEmpleado"));
+                emp.setDni(rs.getString("dni"));         // Usamos 'dni' de la entidad
+                emp.setNombres(rs.getString("nombres"));
+                emp.setApellidos(rs.getString("apellidos"));
+
+                // 3. Establecer la relación
+                emp.setArea(area); // <--- Esto enlaza Empleado con Area
+
+                lista.add(emp);
+            }
+        } // El ResultSet se cierra automáticamente aquí
+
+    } catch (Exception e) {
+        System.err.println("❌ Error al listar equipos: " + e.getMessage());
+    }
+    return lista;
+    }
+
+    @Override
+    public List<Empleado> ListarCombo() {
+         List<Empleado> lista = new ArrayList<>();
+        String sql = "{CALL sp_ListarComboEmpleados()}";
 
         try (Connection con = MySQLConnection.obtenerConexion();
              CallableStatement cs = con.prepareCall(sql);
              ResultSet rs = cs.executeQuery()) {
-
+           
             while (rs.next()) {
                 // 1. Crear la entidad dependiente: Area
                 Area area = new Area();

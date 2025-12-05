@@ -23,6 +23,7 @@ public class FrmBandejaActa extends javax.swing.JPanel {
         initComponents();
         cargarEstadoEnComboBox();
         cargarTabla();
+        setupListeners();
     }
 
     private Estado crearPlaceholderEstado() {
@@ -41,12 +42,23 @@ public class FrmBandejaActa extends javax.swing.JPanel {
             model.addElement(estado);
         }
 
-        cb_Estado.setModel(model);
+       // cb_Estado.setModel(model);
     }
-    
+      private void setupListeners() {
+        txt_Empleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    cargarTabla();
+                }
+            }
+        });
+    }
     private void cargarTabla() {
         ListarActaUseCase acta = new ListarActaUseCase(new ActaRepositoryImpl());
-        List<Acta> lista = acta.Listar();
+        
+        String Nombre =txt_Empleado.getText().trim();
+        List<Acta> lista = acta.Listar(Nombre);
 
         DefaultTableModel modelo = new DefaultTableModel() {
             @Override
@@ -134,8 +146,6 @@ public class FrmBandejaActa extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txt_Empleado = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        cb_Estado = new javax.swing.JComboBox<>();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tb_Acta = new javax.swing.JTable();
@@ -144,8 +154,6 @@ public class FrmBandejaActa extends javax.swing.JPanel {
         jLabel1.setText("Bandeja de Actas");
 
         jLabel2.setText("Nombre de Empleado:");
-
-        jLabel3.setText("Estado: ");
 
         tb_Acta.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -184,20 +192,16 @@ public class FrmBandejaActa extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(12, 12, 12)
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txt_Empleado, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cb_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(292, 292, 292)
-                        .addComponent(jLabel1))
+                        .addComponent(txt_Empleado, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel1)))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -208,9 +212,7 @@ public class FrmBandejaActa extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txt_Empleado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(cb_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_Empleado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(235, Short.MAX_VALUE))
@@ -219,10 +221,8 @@ public class FrmBandejaActa extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<Estado> cb_Estado;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tb_Acta;

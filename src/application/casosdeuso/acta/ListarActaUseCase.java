@@ -13,7 +13,7 @@ public class ListarActaUseCase {
     }
 
     // Método para listar todas las áreas activas o todas según la implementación
-    public List<Acta> Listar() {
-        return repository.Listar();
+    public List<Acta> Listar(String Nombres) {
+        return repository.Listar(Nombres);
     }
 }

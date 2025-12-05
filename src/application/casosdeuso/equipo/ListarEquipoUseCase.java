@@ -19,8 +19,8 @@ public class ListarEquipoUseCase {
         this.Repository = Repository;
     }
 
-    public List<Equipo> Listar() {
-        return Repository.Listar();
+    public List<Equipo> Listar(String Nombre) {
+        return Repository.Listar(Nombre);
     }
     public List<Equipo> ListarCombo(int IdEmpleado){
      return Repository.ListarCombo( IdEmpleado);
